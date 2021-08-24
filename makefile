@@ -41,7 +41,7 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.c
 	@printf "\e[32mcheck\e[1;0m\n"
 
 d	:	$(OBJ)
-	@$(CC) $(CFLAGS) $(DEBUG) $(OBJ) -o $@
+	@$(CC) $(CFLAGS) $(DEBUG) $(OBJ) -o $(NAME)
 
 
 save : fclean
