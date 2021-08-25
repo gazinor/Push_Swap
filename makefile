@@ -14,7 +14,10 @@ HEADER   =	$(addprefix $(HEADER_P)/,$(HEADER_N))
 
 SRC_PATH =	./srcs
 SRC_NAME =	utils.c \
-			utils2.c \
+			list_functions.c \
+			ft_atoi.c \
+			algo.c \
+			parsing.c \
 			push_swap.c
 
 SRC      =	$(addprefix $(SRC_PATH)/,$(SRC_NAME))
