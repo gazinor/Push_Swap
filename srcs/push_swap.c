@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 18:44:27 by glaurent          #+#    #+#             */
-/*   Updated: 2021/08/25 08:02:46 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/08/28 12:29:47 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,31 +72,27 @@ void	push(t_int_list	*from, t_int_list *to)
 
 void	push_swap(t_int_list *a, t_int_list *b)
 {
-	// FAIRE DU PROPRE ET IMPLEMENTER LA PARTIE ALGO
-	swap(a);
-	swap(b);
+	t_instruction_list	*instruction_list;
 
-	print_circular_linked_list(a, "A");
-	print_circular_linked_list(b, "B");
-	a = rotate(a, 0);
-	print_circular_linked_list(a, "A");
-	print_circular_linked_list(b, "B");
-
-	push(a, b);
-	print_circular_linked_list(a, "A");
-	print_circular_linked_list(b, "B");
-	
-	b = rotate(b, 1);
-	print_circular_linked_list(a, "A");
-	print_circular_linked_list(b, "B");
-
-	push(a, b);
-	
-	print_circular_linked_list(a, "A");
-	print_circular_linked_list(b, "B");
-	
+	instruction_list = NULL;
+	while (check_if_sorted(a, (enum Sort_Order)SMALL_TO_BIG) == -1 ||
+			check_if_sorted(b, (enum Sort_Order)BIG_TO_SMALL) == -1)
+	{
+		set_instruction_list(&instruction_list, a);
+		while (instruction_list)
+		{
+			printf("%s\n", instruction_list->instruction);
+			instruction_list = instruction_list->next;
+		}
+		getchar();
+		/*while (instruction_list->next)
+		{
+	 ///////////////FAIRE CE QU'IL Y A DANS LES NOTES !!!///////////
+		}*/
+	}
 	free_list(&a);
 	free_list(&b);
+	//free_list(&instruction_list);
 }
 
 int	main(int ac, char **av)

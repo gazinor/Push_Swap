@@ -6,11 +6,21 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 21:54:24 by glaurent          #+#    #+#             */
-/*   Updated: 2021/08/24 21:54:54 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/08/28 09:32:55 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+
+void	**bzeroV2(void **str_list, int size)
+{
+	unsigned char	*ptr;
+
+	ptr = *str_list;
+	while (size-- > 0)
+		*ptr++ = 0;
+	return (str_list);
+}
 
 int	is_whitespace(char c)
 {
@@ -39,7 +49,8 @@ int	ft_atoi(char *nptr)
 	}
 	while (nptr[i] >= '0' && nptr[i] <= '9')
 		nb = ((nb * 10) + (nptr[i++] - 48));
-	if ((nptr[i] != '\0' && !is_whitespace(nptr[i]) && !(nptr[i] >= '0'
+	if (((nptr[i] == '\0') && ((nptr[i - 1] == '-') || (nptr[i - 1] == '+')))
+		|| (nptr[i] != '\0' && !is_whitespace(nptr[i]) && !(nptr[i] >= '0'
 				&& nptr[i] <= '9')) || nb > 2147483647 || nb < -2147483648)
 		print_error();
 	return ((int)nb * sign);

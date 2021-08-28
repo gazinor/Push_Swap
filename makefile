@@ -17,6 +17,7 @@ SRC_NAME =	utils.c \
 			list_functions.c \
 			ft_atoi.c \
 			algo.c \
+			algo_utils.c \
 			parsing.c \
 			push_swap.c
 
@@ -44,7 +45,7 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.c
 	@printf "\e[32mcheck\e[1;0m\n"
 
 d	:	$(OBJ)
-	@$(CC) $(CFLAGS) $(DEBUG) $(OBJ) -o $(NAME)
+	@$(CC) $(CFLAGS) $(DEBUG) $(OBJ) -o debug
 
 
 save : fclean
@@ -57,5 +58,6 @@ clean :
 
 fclean : clean
 	@rm -rf $(NAME)
+	@rm -rf debug
 
 re : fclean all
