@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 22:26:53 by glaurent          #+#    #+#             */
-/*   Updated: 2021/08/28 12:40:13 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/04 06:17:06 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,57 +27,152 @@ int	get_list_length(t_int_list *a)
 	return (i);
 }
 	
-int	find_index(t_int_list *a, int index)
+int	find_ranged_target_index(t_int_list *a, int min, int max, int len)
 {
 	t_int_list	*tmp;
+	t_int_list	*rev_tmp;
 	int			count;
+	int			len_manager;
 
 	tmp = a->next;
+	rev_tmp = a->prev;
 	count = 0;
-	while (tmp != a)
+	len_manager = len;
+	//printf("find ranged target between --|%d|-- and --|%d|--\n", min, max);
+	while (tmp != a && rev_tmp != a)
 	{
 		++count;
-		if (tmp->target_index == index)
+		if (tmp->target_index >= min && tmp->target_index <= max)
 			return (count);
+		if (rev_tmp->target_index >= min && rev_tmp->target_index <= max)
+			return (len_manager);
+		--len_manager;
 		tmp = tmp->next;
+		rev_tmp = rev_tmp->prev;
 	}
-	return (count);
+	if (len >= 15 && len <= 200)
+		return (find_ranged_target_index(a, max, max + len / 5, len));
+	else if (len > 200)
+		return (find_ranged_target_index(a, max, max + len / 11, len));
+	return (find_ranged_target_index(a, max, max + 1, len));
 }
 
-int	how_many_rotates(t_int_list *a, int index)
+int	how_many_rotates(t_int_list *a, int len)
 {
 	int	hmrotates;
-	int	len;
+	int	max;
 
-	hmrotates = find_index(a, index);
-	len = get_list_length(a);
-	printf("len : %d   |  hmr : %d\n", len, hmrotates);
+	if (len >= 2 && len < 15)
+		max = 1;
+	else if (len >= 15 && len <= 200)
+		max = len / 5;
+	else if (len > 200)
+		max = len / 11;
+	else
+		return (0);
+	hmrotates = find_ranged_target_index(a, 1, max, len);
 	if (hmrotates <= ((int)(len / 2)))
 		return (hmrotates - 1);
 	else
 		return ((len - hmrotates + 1) * -1);
 }
+
 void	fill_instruction_list(t_instruction_list **list,
 		int times, char *instruction)
 {
 	while (times-- > 0)
-	{
 		instruction_append(list, instruction);
-	}
 }
 
-void	set_instruction_list(t_instruction_list **l, t_int_list *a)
+int	smaller(int a, int b)
 {
-	static int			index = 1;
-	int					rotatesA;
+	if (a < b)
+		return (a);
+	else
+		return (b);
+}
 
-	rotatesA = how_many_rotates(a, index);
-	if (rotatesA < 0)
+int	bigger(int a, int b)
+{
+	if (a > b)
+		return (a);
+	else
+		return (b);
+}
+
+int	absolute(int a)
+{
+	if (a < 0)
+		return (-a);
+	return (a);
+}
+
+t_int_list	*get_elem(t_int_list *list, int index)
+{
+	t_int_list	*tmp;
+
+	tmp = list->next;
+	while (tmp != list)
 	{
-		rotatesA *= -1;
-		fill_instruction_list(l, rotatesA, "rra");
+		//printf("Current elem target_index --|%d|--on index [%d]\n",
+	//			tmp->target_index, tmp->index);
+		if (tmp->index == index)
+			return (tmp);
+		tmp = tmp->next;
 	}
+	return (list);
+}
+
+void	deal_with_instructions2(int rotA, int rotB, t_instruction_list **l)
+{
+	if (rotA > 0)
+		fill_instruction_list(l, rotA, "ra");
+	else if (rotA < 0)
+		fill_instruction_list(l, -rotA, "rra");
+	if (rotB < 0)
+		fill_instruction_list(l, -rotB, "rrb");
+	else if (rotB > 0)
+		fill_instruction_list(l, rotB, "rb");
+}
+
+void	deal_with_instructions(int rotA, int rotB, t_instruction_list **l)
+{
+	if (rotA < 0 && rotB < 0)
+	{
+		fill_instruction_list(l, smaller(-rotA, -rotB), "rrr");
+		if (-rotA - -rotB > 0)
+			fill_instruction_list(l, absolute(-rotA - -rotB), "rra");
+		else
+			fill_instruction_list(l, absolute(-rotA - -rotB), "rrb");
+	}
+	else if (rotA > 0 && rotB > 0)
+	{
+		fill_instruction_list(l, smaller(rotA, rotB), "rr");
+		if (rotA - rotB > 0)
+			fill_instruction_list(l, absolute(rotA - rotB), "ra");
+		else
+			fill_instruction_list(l, absolute(rotA - rotB), "rb");
+	}
+	else
+		deal_with_instructions2(rotA, rotB, l);
+	instruction_append(l, "pb");
+}
+
+void	set_instruction_list(t_instruction_list **l, t_int_list *a,
+		t_int_list *b)
+{
+	int	rotatesA;
+	int	rotatesB;
+	int	lenA;
+
+	lenA = get_list_length(a);
+	rotatesA = how_many_rotates(a, lenA);
+	if (rotatesA < 0)
+		rotatesB = get_nb_rot_pos(b, get_elem(a, lenA + rotatesA + 1)->target_index);
 	else if (rotatesA > 0)
-		fill_instruction_list(l, rotatesA, "ra");
-	++index;
+		rotatesB = get_nb_rot_pos(b, get_elem(a, rotatesA + 1)->target_index);
+	else
+		rotatesB = get_nb_rot_pos(b, get_elem(a, 1)->target_index);
+	//printf("A : %d | B : %d\n", rotatesA, rotatesB);
+	deal_with_instructions(rotatesA, rotatesB, l);
 }

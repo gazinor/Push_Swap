@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 18:44:27 by glaurent          #+#    #+#             */
-/*   Updated: 2021/08/28 12:29:47 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/04 06:16:46 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,25 +70,40 @@ void	push(t_int_list	*from, t_int_list *to)
 	}
 }
 
+void	execute_instruction_list(t_instruction_list **l, t_int_list *a, t_int_list *b)
+{
+	t_instruction_list	*tmp;
+
+	while (*l != NULL)
+	{
+		if (checks_before_instruction(l, a, b) == -1)
+		{
+			erase_instructions(l);
+			break;
+		}
+		if (*l != NULL)
+		{
+			//printf("Execute \"%s\"\n", (*l)->instruction);
+			make_a_move(a, b, (*l)->instruction);
+			tmp = *l;
+			*l = (*l)->next;
+			free(tmp);
+			tmp = NULL;
+		}
+		//getchar();
+	}
+}
+
 void	push_swap(t_int_list *a, t_int_list *b)
 {
 	t_instruction_list	*instruction_list;
 
 	instruction_list = NULL;
 	while (check_if_sorted(a, (enum Sort_Order)SMALL_TO_BIG) == -1 ||
-			check_if_sorted(b, (enum Sort_Order)BIG_TO_SMALL) == -1)
+			b->next != b)
 	{
-		set_instruction_list(&instruction_list, a);
-		while (instruction_list)
-		{
-			printf("%s\n", instruction_list->instruction);
-			instruction_list = instruction_list->next;
-		}
-		getchar();
-		/*while (instruction_list->next)
-		{
-	 ///////////////FAIRE CE QU'IL Y A DANS LES NOTES !!!///////////
-		}*/
+		set_instruction_list(&instruction_list, a, b);
+		execute_instruction_list(&instruction_list, a, b);
 	}
 	free_list(&a);
 	free_list(&b);
@@ -97,8 +112,6 @@ void	push_swap(t_int_list *a, t_int_list *b)
 
 int	main(int ac, char **av)
 {
-	if (ac < 2)
-		print_error();
 	push_swap(int_list_from_str_list(ac, av), create_list());
 	return (0);
 }

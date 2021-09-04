@@ -66,6 +66,8 @@ void		set_target_indexes(t_int_list *root, t_int_list *sorted_list);
 
 int			check_if_sorted(t_int_list *root, int order);
 
+int			check_if_sorted_V2(t_int_list *root, int order);
+
 void		make_a_move(t_int_list *list, t_int_list *maybe, char *move);
 
 int			str_compare(char *s1, char *s2);
@@ -73,15 +75,41 @@ int			str_compare(char *s1, char *s2);
 void		fill_instruction_list(t_instruction_list **list,
 		int times, char *instruction);
 
-void		set_instruction_list(t_instruction_list **l, t_int_list *a);
+void		set_instruction_list(t_instruction_list **l, t_int_list *a,
+		t_int_list *b);
 
 int			how_many_rotates(t_int_list *a, int index);
 
-int			find_index(t_int_list *a, int index);
+int			find_ranged_target_index(t_int_list *a, int min, int max, int len);
 
 int			get_list_length(t_int_list *a);
 
 void		**bzeroV2(void **str_list, int size);
 
 void		instruction_append(t_instruction_list **list, char *inst);
+
+int			checks_before_instruction(t_instruction_list **l,
+		t_int_list *a, t_int_list *b);
+
+void		erase_instructions(t_instruction_list **list);
+
+void		push_all(t_int_list *a, t_int_list *b, t_instruction_list **l);
+
+int			get_nb_rot_pos(t_int_list *list, int topping_value);
+
+t_int_list	*get_elem(t_int_list *list, int index);
+
+void		deal_with_instructions(int rotA, int rotB, t_instruction_list **l);
+
+void		deal_with_instructions2(int rotA, int rotB, t_instruction_list **l);
+
+int			smaller(int a, int b);
+
+int			bigger(int a, int b);
+
+int			absolute(int a);
+
+void		execute_instruction_list(t_instruction_list **l,
+		t_int_list *a, t_int_list *b);
+
 #endif

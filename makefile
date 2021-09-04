@@ -18,6 +18,7 @@ SRC_NAME =	utils.c \
 			ft_atoi.c \
 			algo.c \
 			algo_utils.c \
+			algo_utils2.c \
 			parsing.c \
 			push_swap.c
 
