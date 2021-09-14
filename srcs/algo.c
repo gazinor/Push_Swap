@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 22:26:53 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/04 06:17:06 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/14 22:38:03 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,50 @@ void	deal_with_instructions(int rotA, int rotB, t_instruction_list **l)
 	instruction_append(l, "pb");
 }
 
+void	ideal_instructions(t_int_list *a, t_instruction_list **l)
+{
+	int e1;
+	int e2;
+	int e3;
+
+	e1 = get_elem(a, 1)->target_index;
+	e2 = get_elem(a, 2)->target_index;
+	e3 = get_elem(a, 3)->target_index;
+	if (e1 > e2)
+	{
+		if (e3 > e1 || e3 < e2)
+			instruction_append(l, "sa");
+		else if (e3 > e2 && e3 < e1)
+			instruction_append(l, "ra");
+		if (e3 < e2)
+			instruction_append(l, "rra");
+	}
+	else if (e1 < e2)
+	{
+		instruction_append(l, "rra");
+		if (e3 > e1)
+			instruction_append(l, "sa");
+	}
+}
+
+void	are_rots_optimized(int *rotA, int lenB, int *rotB)
+{
+//	printf("|Before optimization| A : %d | B(%d) : %d\n", *rotA, lenB, *rotB);
+	if (*rotA * *rotB < 0)
+	{
+		if (*rotB < 0)
+		{
+			if (*rotA - *rotB > bigger(*rotA, lenB + *rotB))
+				*rotB = lenB + *rotB;
+		}
+		else
+			if (*rotB - *rotA > bigger(-*rotA,
+						absolute(-lenB + *rotB)))
+				*rotB = -lenB + *rotB;
+	}
+//	printf("|After optimization| A : %d | B(%d) : %d\n", *rotA, lenB, *rotB);
+}
+
 void	set_instruction_list(t_instruction_list **l, t_int_list *a,
 		t_int_list *b)
 {
@@ -168,11 +212,16 @@ void	set_instruction_list(t_instruction_list **l, t_int_list *a,
 	lenA = get_list_length(a);
 	rotatesA = how_many_rotates(a, lenA);
 	if (rotatesA < 0)
-		rotatesB = get_nb_rot_pos(b, get_elem(a, lenA + rotatesA + 1)->target_index);
+		rotatesB = get_nb_rot_pos(b,
+				get_elem(a, lenA + rotatesA + 1)->target_index);
 	else if (rotatesA > 0)
-		rotatesB = get_nb_rot_pos(b, get_elem(a, rotatesA + 1)->target_index);
+		rotatesB = get_nb_rot_pos(b,
+				get_elem(a, rotatesA + 1)->target_index);
 	else
 		rotatesB = get_nb_rot_pos(b, get_elem(a, 1)->target_index);
-	//printf("A : %d | B : %d\n", rotatesA, rotatesB);
-	deal_with_instructions(rotatesA, rotatesB, l);
+	are_rots_optimized(&rotatesA, get_list_length(b), &rotatesB);
+	if (lenA == 3)
+		ideal_instructions(a, l);
+	else
+		deal_with_instructions(rotatesA, rotatesB, l);
 }

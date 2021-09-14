@@ -4,7 +4,9 @@ LC_NUMERIC="en_US.UTF-8"
 
 COLOR_GREEN="\033[32m"
 COLOR_RESET="\033[39m"
+RESET="\e[0m"
 COLOR_YELLOW="\033[33m"
+CBG="\e[38;5;74m"
 
 nb_tests=100
 
@@ -26,7 +28,10 @@ function testList {
     printf "\nList size : $1\n"
     for i in `seq 0 $nb_tests`;
     do
-        var=$(../push_swap `ruby -e "puts (1..$1).to_a.shuffle.join(' ')"`|wc -l|awk '{$1=$1};1')
+		list_content=`ruby -e "puts (1..$1).to_a.shuffle.join(' ')"`
+        var=$(./push_swap $list_content |wc -l|awk '{$1=$1};1')
+		printf "\rTrying List : \n\r$CBG%s$RESET\n\
+				Number of moves : %d\n" "$list_content" "$var"
         if [ "$var" -lt "$min" ]
         then
             min=$var
@@ -42,9 +47,9 @@ function testList {
     printf "\nAverage of actions : ${COLOR_YELLOW}"
     X=`echo "$s / ($nb_tests + 1)" | bc -l`
     printf %.0f "$X"
-    printf "\n${COLOR_RESET}Max : ${COLOR_YELLOW}$max ${COLOR_RESET}| Min : ${COLOR_YELLOW}$min${COLOR_RESET}"
+    printf "\n${COLOR_RESET}Min : ${COLOR_YELLOW}$min ${COLOR_RESET}| Max : ${COLOR_YELLOW}$max${COLOR_RESET}"
     echo
-    arg=`ruby -e "puts (1..$1).to_a.shuffle.join(' ')"`; ../push_swap $arg | ./checker_Mac $arg
+    arg=`ruby -e "puts (1..$1).to_a.shuffle.join(' ')"`; ./push_swap $arg | checkers/checker_Mac $arg
 }
 
 for arg in $@

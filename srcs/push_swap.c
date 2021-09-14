@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 18:44:27 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/04 06:16:46 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/13 07:04:16 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,44 +70,32 @@ void	push(t_int_list	*from, t_int_list *to)
 	}
 }
 
-void	execute_instruction_list(t_instruction_list **l, t_int_list *a, t_int_list *b)
-{
-	t_instruction_list	*tmp;
-
-	while (*l != NULL)
-	{
-		if (checks_before_instruction(l, a, b) == -1)
-		{
-			erase_instructions(l);
-			break;
-		}
-		if (*l != NULL)
-		{
-			//printf("Execute \"%s\"\n", (*l)->instruction);
-			make_a_move(a, b, (*l)->instruction);
-			tmp = *l;
-			*l = (*l)->next;
-			free(tmp);
-			tmp = NULL;
-		}
-		//getchar();
-	}
-}
-
 void	push_swap(t_int_list *a, t_int_list *b)
 {
 	t_instruction_list	*instruction_list;
+	t_instruction_list	*tmp;
 
 	instruction_list = NULL;
 	while (check_if_sorted(a, (enum Sort_Order)SMALL_TO_BIG) == -1 ||
 			b->next != b)
 	{
 		set_instruction_list(&instruction_list, a, b);
-		execute_instruction_list(&instruction_list, a, b);
+		while (instruction_list != NULL)
+		{
+			if (checks_before_instruction(&instruction_list, a, b) == -1)
+				break;
+			if (instruction_list != NULL)
+			{
+				make_a_move(a, b, instruction_list->instruction);
+				tmp = instruction_list;
+				instruction_list = instruction_list->next;
+				free(tmp);
+				tmp = NULL;
+			}
+		}
 	}
 	free_list(&a);
 	free_list(&b);
-	//free_list(&instruction_list);
 }
 
 int	main(int ac, char **av)

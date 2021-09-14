@@ -48,6 +48,8 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.c
 d	:	$(OBJ)
 	@$(CC) $(CFLAGS) $(DEBUG) $(OBJ) -o debug
 
+tester : all
+	sh checkers/tester.sh $(noa)
 
 save : fclean
 	git add .

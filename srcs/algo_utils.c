@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 10:17:11 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/04 07:05:16 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/14 22:33:28 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,31 @@
 
 int	check_if_sorted_V2(t_int_list *root, int order)
 {
-	t_int_list	*current;
-	t_int_list	*next;
-	int			len;
-	int			max_elem_position;
+	t_int_list	*cur;
+	int			ret;
+	int			token;
 
-	current = root->next;
-	next = current->next;
-	len = get_list_length(root);
-	max_elem_position = 1;
-	while (current != root && next != root)
+	cur = root->next;
+	ret = 1;
+	token = 1;
+	while (cur != root && cur->next != root)
 	{
-		if (current->val * order > next->val * order)
-			if (current->target_index != len)
+		if (cur->val * order > cur->next->val * order)
+		{
+			if (token == 1)
 			{
-				max_elem_position = current->index;
-				return (-1);
+				token = 0;
+				ret = cur->index;
 			}
-		current = next;
-		next = current->next;
+			else
+				return (-1);
+		}
+		cur = cur->next;
 	}
-	return (max_elem_position);
+	if (cur->val * order > cur->next->next->val * order)
+		if (token == 0)
+			return (-1);
+	return (ret);
 }
 
 int	check_if_sorted(t_int_list *root, int order)
@@ -117,6 +121,7 @@ void	make_a_move(t_int_list *a, t_int_list *b, char *move)
 	ft_putstr_fd(move, 1);
 	//print_circular_linked_list(a, "\e[4;48;5;74mA");
 	//print_circular_linked_list(b, "\e[4;48;5;47mB");
+	//getchar();
 }
 
 void	instruction_append(t_instruction_list **list, char *inst)

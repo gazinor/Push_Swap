@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/31 06:49:57 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/04 07:02:41 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/14 20:58:59 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,45 @@ void	erase_instructions(t_instruction_list **list)
 	*list = NULL;
 }
 
+int	get_nb_rot_rev_pos(t_int_list *list, int under_val)
+{
+	t_int_list	*tmp;
+	int			val;
+	int			pos;
+	int			lenB;
+
+	tmp = list->next;
+	val = 1000000;
+	pos = 1;
+	lenB = 0;
+	while (tmp != list)
+	{
+	//	printf("val [%d] < target_index [%d] < under_val [%d]\n",
+	//			val, tmp->target_index, under_val);
+		if (tmp->target_index < val && tmp->target_index > under_val)
+		{
+//			printf("IT ENTERED\n");
+			val = tmp->target_index;
+			pos = tmp->index;
+		}
+		lenB = tmp->index;
+		tmp = tmp->next;
+	}
+	//printf("Trying to get variable above --|%d|--, got --|%d|--\n", under_val, val);
+	if (lenB < 2 || under_val == 0)
+		return (0);
+	if (pos <= lenB / 2)
+	{
+	//	printf("--|%d|-- number of rotations for b\n", pos - 1);
+		return (--pos);
+	}
+	else
+	{
+	//	printf("number of rotations for b --|%d|--\n", (lenB - pos + 1) * -1);
+		return ((lenB - pos + 1) * -1);
+	}
+}
+
 int	get_nb_rot_pos(t_int_list *list, int top_val)
 {
 	t_int_list	*tmp;
@@ -41,28 +80,31 @@ int	get_nb_rot_pos(t_int_list *list, int top_val)
 	lenB = 0;
 	while (tmp != list)
 	{
-		//printf("val [%d] < target_index [%d] < top_val [%d]\n",
-			//	val, tmp->target_index, top_val);
+//		printf("val [%d] < target_index [%d] < top_val [%d]\n",
+//				val, tmp->target_index, top_val);
 		if (tmp->target_index > val && tmp->target_index < top_val)
 		{
-			//printf("IT ENTERED\n");
+//			printf("IT ENTERED\n");
 			val = tmp->target_index;
 			pos = tmp->index;
 		}
 		lenB = tmp->index;
 		tmp = tmp->next;
 	}
-	//printf("Trying to get variable under --|%d|--, got --|%d|--\n", top_val, val);
-	if (lenB < 2)
+//	printf("Trying to get variable under --|%d|--, got --|%d|--\n", top_val, val);
+	if (lenB < 2 || top_val == 0)
 		return (0);
+	if (val == 0)
+		return (get_nb_rot_pos(list,
+					rot_to_highest_target(list, 1) + 1));
 	if (pos <= lenB / 2)
 	{
-		//printf("--|%d|-- number of rotations for b\n", pos - 1);
+	//	printf("--|%d|-- number of rotations for b\n", pos - 1);
 		return (--pos);
 	}
 	else
 	{
-		//printf("number of rotations for b --|%d|--\n", (lenB - pos + 1) * -1);
+	//	printf("number of rotations for b --|%d|--\n", (lenB - pos + 1) * -1);
 		return ((lenB - pos + 1) * -1);
 	}
 }
@@ -83,6 +125,20 @@ int	rot_to_highest_target(t_int_list *list, int target)
 	return (highest);
 }
 
+int	highest_target(t_int_list *list, int target)
+{
+	t_int_list	*tmp;
+
+	tmp = list->next;
+	while (tmp != list)
+	{
+		if (tmp->target_index > target)
+			return (0);
+		tmp = tmp->next;
+	}
+	return (1);
+}
+
 void	push_all(t_int_list *a, t_int_list *b, t_instruction_list **l)
 {
 	t_int_list	*t_b;
@@ -93,7 +149,8 @@ void	push_all(t_int_list *a, t_int_list *b, t_instruction_list **l)
 	//printf("--------------------\n|PUSH ALL IN ENTREE|\n--------------------\n");
 	while (t_b != b)
 	{
-		rotA = get_nb_rot_pos(a, t_b->target_index + 2);
+		rotA = get_nb_rot_rev_pos(a, t_b->target_index);
+		//printf("rot before push to A : |%d|\n", rotA);
 		if (rotA < 0)
 			while (rotA++ != 0)
 				make_a_move(a, b, "rra");
@@ -120,21 +177,28 @@ int	lowest_target(t_int_list *list, int target)
 	return (1);
 }
 
-int	checks_before_instruction(t_instruction_list **l, t_int_list *a, t_int_list *b)
+int	checks_before_instruction(t_instruction_list **l, t_int_list *a,
+		t_int_list *b)
 {
 	int	rot;
 
-//	if (a->next->val > a->next->next->val)
-//		make_a_move(a, b, "sa");
 	rot = get_nb_rot_pos(a, 2);
-	if (check_if_sorted_V2(a, (enum Sort_Order)SMALL_TO_BIG) > 0 && rot != 0)
+	if (check_if_sorted_V2(a, (enum Sort_Order)SMALL_TO_BIG) > 0)
 	{
-		if (rot < 0)
-			while (rot++ != 0)
-				make_a_move(a, b, "rra");
-		else if (rot > 0)
-			while (rot-- != 0)
-				make_a_move(a, b, "ra");
+		if (b->next == b)
+		{
+			if (rot < 0)
+				while (rot++ != 0)
+					make_a_move(a, b, "rra");
+			else if (rot > 0)
+				while (rot-- != 0)
+					make_a_move(a, b, "ra");
+		}
+		else
+		{
+			push_all(a, b, l);
+			return (-1);
+		}
 	}
 	if (lowest_target(a, a->next->target_index) == 1)
 		if (check_if_sorted(a, (enum Sort_Order)SMALL_TO_BIG) == 1)
@@ -156,5 +220,8 @@ int	checks_before_instruction(t_instruction_list **l, t_int_list *a, t_int_list 
 		push_all(a, b, l);
 		return (-1);
 	}
+	if (get_list_length(a) > 9 &&
+			a->next->target_index == a->next->next->target_index - 1)
+		make_a_move(a, b, "sa");
 	return (1);
 }

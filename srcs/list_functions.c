@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 21:48:39 by glaurent          #+#    #+#             */
-/*   Updated: 2021/08/28 11:08:27 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/12 19:40:40 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_int_list	*create_list(void)
 	{
 		root->val = 1111999;
 		root->index = 0;
+		root->target_index = 0;
 		root->prev = root;
 		root->next = root;
 	}

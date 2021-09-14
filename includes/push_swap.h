@@ -95,7 +95,7 @@ void		erase_instructions(t_instruction_list **list);
 
 void		push_all(t_int_list *a, t_int_list *b, t_instruction_list **l);
 
-int			get_nb_rot_pos(t_int_list *list, int topping_value);
+int			get_nb_rot_pos(t_int_list *list, int top_val);
 
 t_int_list	*get_elem(t_int_list *list, int index);
 
@@ -111,5 +111,9 @@ int			absolute(int a);
 
 void		execute_instruction_list(t_instruction_list **l,
 		t_int_list *a, t_int_list *b);
+
+void		ideal_instructions(t_int_list *a, t_instruction_list **l);
+
+int			rot_to_highest_target(t_int_list *list, int target);
 
 #endif
