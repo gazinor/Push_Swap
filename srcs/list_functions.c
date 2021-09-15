@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 21:48:39 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/12 19:40:40 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/15 04:35:07 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	add_head(int val, t_int_list *root)
 	if (new != NULL)
 	{
 		new->val = val;
+		new->to_push = 0;
 		new->prev = root;
 		new->next = root->next;
 		root->next->prev = new;
@@ -75,6 +76,7 @@ void	add_tail(int val, t_int_list *root)
 	if (new != NULL)
 	{
 		new->val = val;
+		new->to_push = 0;
 		new->prev = root->prev;
 		new->next = root;
 		root->prev->next = new;

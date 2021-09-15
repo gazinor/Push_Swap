@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/31 06:49:57 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/14 20:58:59 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/15 09:31:50 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,24 +139,89 @@ int	highest_target(t_int_list *list, int target)
 	return (1);
 }
 
-void	push_all(t_int_list *a, t_int_list *b, t_instruction_list **l)
+void	set_shortest_alignment(int *rA, int *rB, t_int_list *a, t_int_list *b)
+{
+	t_int_list	*tmp;
+	int			shortest;
+	int			keep_rot;
+	int			keep_index;
+	int			lenB;
+
+	tmp = b->next;
+	shortest = 1000000;
+	lenB = get_list_length(b);
+	while (tmp != b)
+	{
+		keep_rot = get_nb_rot_rev_pos(a, tmp->target_index);
+		keep_index = tmp->index - 1;
+		are_rots_optimized(&keep_rot, lenB, &keep_index);
+		if (absolute(keep_rot) + absolute(keep_index) < shortest)
+		{
+			shortest = absolute(keep_rot) + absolute(keep_index);
+			*rA = keep_rot;
+			*rB = keep_index;
+		}
+		tmp = tmp->next;
+	}
+}
+
+void	exec_n_instructions(t_int_list *a, t_int_list *b, int n, char *inst)
+{
+	while (n-- > 0)
+		make_a_move(a, b, inst);
+}
+
+void	make_moves_from_rots2(t_int_list *a, t_int_list *b, int rotA, int rotB)
+{
+	if (rotA > 0)
+		exec_n_instructions(a, b, rotA, "ra");
+	else if (rotA < 0)
+		exec_n_instructions(a, b, -rotA, "rra");
+	if (rotB < 0)
+		exec_n_instructions(a, b, -rotB, "rrb");
+	else if (rotB > 0)
+		exec_n_instructions(a, b, rotB, "rb");
+}
+
+void	make_moves_from_rots(t_int_list *a, t_int_list *b,int rotA, int rotB)
+{
+	if (rotA < 0 && rotB < 0)
+	{
+		exec_n_instructions(a, b, smaller(-rotA, -rotB), "rrr");
+		if (-rotA - -rotB > 0)
+			exec_n_instructions(a, b, absolute(-rotA - -rotB), "rra");
+		else
+			exec_n_instructions(a, b, absolute(-rotA - -rotB), "rrb");
+	}
+	else if (rotA > 0 && rotB > 0)
+	{
+		exec_n_instructions(a, b, smaller(rotA, rotB), "rr");
+		if (rotA - rotB > 0)
+			exec_n_instructions(a, b, absolute(rotA - rotB), "ra");
+		else
+			exec_n_instructions(a, b, absolute(rotA - rotB), "rb");
+	}
+	else
+		make_moves_from_rots2(a, b, rotA, rotB);
+}
+
+void	push_all_to_a(t_int_list *a, t_int_list *b, t_instruction_list **l)
 {
 	t_int_list	*t_b;
-	int			rotA;
+	int			rA;
+	int			rB;
 
 	t_b = b->next;
 	erase_instructions(l);
+	rA = 0;
+	rB = 0;
 	//printf("--------------------\n|PUSH ALL IN ENTREE|\n--------------------\n");
 	while (t_b != b)
 	{
-		rotA = get_nb_rot_rev_pos(a, t_b->target_index);
 		//printf("rot before push to A : |%d|\n", rotA);
-		if (rotA < 0)
-			while (rotA++ != 0)
-				make_a_move(a, b, "rra");
-		else if (rotA > 0)
-			while (rotA-- != 0)
-				make_a_move(a, b, "ra");
+		set_shortest_alignment(&rA, &rB, a, b);
+		//printf("rot A : --[ %d ]--\nrot B : --[ %d ]--\n", rA, rB);
+		make_moves_from_rots(a, b, rA, rB);
 		make_a_move(a, b, "pa");
 		t_b = t_b->next;
 	}
@@ -196,7 +261,7 @@ int	checks_before_instruction(t_instruction_list **l, t_int_list *a,
 		}
 		else
 		{
-			push_all(a, b, l);
+			push_all_to_a(a, b, l);
 			return (-1);
 		}
 	}
@@ -211,13 +276,13 @@ int	checks_before_instruction(t_instruction_list **l, t_int_list *a,
 			else if (rot > 0)
 				while (rot-- != 0)
 					make_a_move(a, b, "rb");
-			push_all(a, b, l);
+			push_all_to_a(a, b, l);
 			return (-1);
 		}
 	if (check_if_sorted(a, (enum Sort_Order)SMALL_TO_BIG) == 1 &&
 			check_if_sorted(b, (enum Sort_Order)BIG_TO_SMALL))
 	{
-		push_all(a, b, l);
+		push_all_to_a(a, b, l);
 		return (-1);
 	}
 	if (get_list_length(a) > 9 &&

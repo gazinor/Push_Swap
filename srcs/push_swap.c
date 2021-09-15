@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 18:44:27 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/13 07:04:16 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/15 09:31:52 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,25 +35,25 @@ t_int_list	*rotate(t_int_list *root, int reverse)
 
 	if (root->next == root || root->next->next == root)
 		return (root);
-	new_spot = reverse == 1 ? root->prev : root->next;
 	if (reverse == 0)
 	{
+		new_spot = root->next;
 		root->prev->next = new_spot;
 		new_spot->prev = root->prev;
 		root->prev = new_spot;
 		root->next = new_spot->next;
 		new_spot->next->prev = root;
 		new_spot->next = root;
+		set_indexes(root);
+		return (root);
 	}
-	else
-	{
-		new_spot->next = root->next;
-		root->next->prev = new_spot;
-		root->next = new_spot;
-		root->prev = new_spot->prev;
-		new_spot->prev->next = root;
-		new_spot->prev = root;
-	}
+	new_spot = root->prev;
+	new_spot->next = root->next;
+	root->next->prev = new_spot;
+	root->next = new_spot;
+	root->prev = new_spot->prev;
+	new_spot->prev->next = root;
+	new_spot->prev = root;
 	set_indexes(root);
 	return (root);
 }

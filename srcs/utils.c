@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 21:50:01 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/04 03:09:14 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/15 05:41:54 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void	print_circular_linked_list(t_int_list *list, char *which_list)
 		which_list);
 	while (tmp != list)
 	{
-		printf("Index [%d](should be at [%d]) : |%d| -- next is --> |%d|\n",
-			tmp->index, tmp->target_index, tmp->val, tmp->next->val);
+		printf("Index [%d](should be at [%d]) : |%d| -- next is --> |%d|     push ? %s\n",
+			tmp->index, tmp->target_index, tmp->val, tmp->next->val, tmp->to_push == 1 ? "Oui" : "Non");
 		tmp = tmp->next;
 	}
 	printf("\e[0m\n");

@@ -7,6 +7,8 @@ COLOR_RESET="\033[39m"
 RESET="\e[0m"
 COLOR_YELLOW="\033[33m"
 CBG="\e[38;5;74m"
+U="\e[4;38;2;226;179;24;48;2;150;0;220m"
+B="\e[1m"
 
 nb_tests=100
 
@@ -30,8 +32,8 @@ function testList {
     do
 		list_content=`ruby -e "puts (1..$1).to_a.shuffle.join(' ')"`
         var=$(./push_swap $list_content |wc -l|awk '{$1=$1};1')
-		printf "\rTrying List : \n\r$CBG%s$RESET\n\
-				Number of moves : %d\n" "$list_content" "$var"
+		printf "\n\n\n\t\t\t$U Number of moves : $B%d $RESET\n" "$var"
+		printf "\rTrying List : \n\r$CBG%s$RESET\n" "$list_content" 
         if [ "$var" -lt "$min" ]
         then
             min=$var

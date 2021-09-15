@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 22:26:53 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/14 22:38:03 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/15 09:32:57 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,100 @@ void	are_rots_optimized(int *rotA, int lenB, int *rotB)
 //	printf("|After optimization| A : %d | B(%d) : %d\n", *rotA, lenB, *rotB);
 }
 
+void	set_to_push_values(t_int_list *root, int begining)
+{
+	t_int_list	*tmp;
+	t_int_list	*copy;
+	int			t_i;
+
+	tmp = root->next;
+	while (--begining != 0)
+		tmp = tmp->next;
+	copy = tmp->next;
+	t_i = copy->target_index;
+	while (copy != tmp)
+	{
+		if (copy == root)
+			copy = copy->next;
+		if (t_i > copy->target_index)
+			copy->to_push = 1;
+		else
+			t_i = copy->target_index;
+		if (copy != tmp)
+			copy = copy->next;
+	}
+}
+
+int	recursive_create_loop(t_int_list *list, int precision)
+{
+	(void)precision;
+	(void)list;
+	return (-156487);
+	////////////////TO DO / A FAIRE / HASTA LA VIDA / STRUDEL
+}
+
+int	find_biggest_loop(t_int_list *list)
+{
+	t_int_list	*tmp;
+	int			loop_index;
+	int			loop_len;
+	int			len;
+/*
+//
+//	Pour cette fonction je veux :
+//	- partir d'un element de la liste
+//	- chercher en recursive avec une precision qui augmente d'1 chaque tour,
+//		quelle est la plus grande taille que peut faire la loop
+//	- 
+//
+*/
+	tmp = list->next;
+	loop_index = 0;
+	loop_len = 0;
+	while (tmp != list && tmp->next != list)
+	{
+		len = 0;
+		while (tmp->next != list && tmp->target_index < tmp->next->target_index
+				&& ++len)
+			tmp = tmp->next;
+		if (len > loop_len)
+		{
+			loop_len = len;
+			loop_index = tmp->index - len;
+		}
+		tmp = tmp->next;
+	}
+	set_to_push_values(list, loop_index);
+	return (loop_index);
+}
+
+void	push_until_loop_creation(t_int_list *a, t_int_list *b)
+{
+	t_int_list	*tmp;
+	t_int_list	*next;
+	int			until;
+
+	tmp = a->next;
+	until = find_biggest_loop(a);
+//	printf("the loop can be found at index[%d]\n", until);
+	while (check_if_sorted_V2(a, (enum Sort_Order)SMALL_TO_BIG) < 0)
+	{
+		next = tmp->next;
+		if (tmp->to_push == 1)
+			make_a_move(a, b, "pb");
+		else
+			make_a_move(a, b, "ra");
+		tmp = next;
+	}
+}
+
+void	long_list_algo(t_instruction_list **l, t_int_list *a, t_int_list *b)
+{
+	push_until_loop_creation(a, b);
+	push_all_to_a(a, b, l);
+	checks_before_instruction(l, a, b);
+}
+
 void	set_instruction_list(t_instruction_list **l, t_int_list *a,
 		t_int_list *b)
 {
@@ -210,6 +304,11 @@ void	set_instruction_list(t_instruction_list **l, t_int_list *a,
 	int	lenA;
 
 	lenA = get_list_length(a);
+	if (lenA >= 100)
+	{
+		long_list_algo(l, a, b);
+		return ;
+	}
 	rotatesA = how_many_rotates(a, lenA);
 	if (rotatesA < 0)
 		rotatesB = get_nb_rot_pos(b,

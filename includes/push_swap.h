@@ -16,6 +16,7 @@ typedef struct	s_int_list
 	int					val;
 	int					index;
 	int					target_index;
+	int					to_push;
 	struct s_int_list	*prev;
 	struct s_int_list	*next;
 }				t_int_list;
@@ -93,7 +94,7 @@ int			checks_before_instruction(t_instruction_list **l,
 
 void		erase_instructions(t_instruction_list **list);
 
-void		push_all(t_int_list *a, t_int_list *b, t_instruction_list **l);
+void		push_all_to_a(t_int_list *a, t_int_list *b, t_instruction_list **l);
 
 int			get_nb_rot_pos(t_int_list *list, int top_val);
 
@@ -115,5 +116,10 @@ void		execute_instruction_list(t_instruction_list **l,
 void		ideal_instructions(t_int_list *a, t_instruction_list **l);
 
 int			rot_to_highest_target(t_int_list *list, int target);
+
+void		are_rots_optimized(int *rotA, int lenB, int *rotB);
+
+void		long_list_algo(t_instruction_list **l,
+		t_int_list *a, t_int_list *b);
 
 #endif
