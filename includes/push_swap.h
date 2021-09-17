@@ -27,6 +27,15 @@ typedef struct	s_instruction_list
 	struct s_instruction_list	*next;
 }				t_instruction_list;
 
+typedef struct	s_find_loop
+{
+	int loop_index;
+    int count;
+    int max_target;
+    int max_count;
+    int precision;
+}               t_find_loop;
+
 t_int_list	*create_list(void);
 
 void		empty_list(t_int_list *list);
@@ -98,6 +107,8 @@ void		push_all_to_a(t_int_list *a, t_int_list *b, t_instruction_list **l);
 
 int			get_nb_rot_pos(t_int_list *list, int top_val);
 
+int			get_nb_rot_rev_pos(t_int_list *list, int under_val);
+
 t_int_list	*get_elem(t_int_list *list, int index);
 
 void		deal_with_instructions(int rotA, int rotB, t_instruction_list **l);
@@ -117,9 +128,25 @@ void		ideal_instructions(t_int_list *a, t_instruction_list **l);
 
 int			rot_to_highest_target(t_int_list *list, int target);
 
+int	        rot_to_lowest_target(t_int_list *list, int target);
+
 void		are_rots_optimized(int *rotA, int lenB, int *rotB);
 
 void		long_list_algo(t_instruction_list **l,
 		t_int_list *a, t_int_list *b);
+
+void        exec_n_instructions(t_int_list *a, t_int_list *b, int n, char *inst);
+
+void        make_moves_from_rots(t_int_list *a, t_int_list *b, int rotA, int rotB);
+
+void        make_moves_from_rots2(t_int_list *a, t_int_list *b, int rotA, int rotB);
+
+void	push_until_loop_creation(t_int_list *a, t_int_list *b);
+
+t_find_loop find_biggest_loop(t_int_list *list, int len);
+
+t_find_loop *recursive_find_loop(t_int_list *list, int precision, int len);
+
+void	set_to_push_values(t_int_list *root, int begining, int precision);
 
 #endif

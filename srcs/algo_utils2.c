@@ -52,9 +52,12 @@ int	get_nb_rot_rev_pos(t_int_list *list, int under_val)
 		lenB = tmp->index;
 		tmp = tmp->next;
 	}
-	//printf("Trying to get variable above --|%d|--, got --|%d|--\n", under_val, val);
-	if (lenB < 2 || under_val == 0)
+//	printf("Trying to get variable above --|%d|--, got --|%d|--\n", under_val, val);
+	if (lenB < 2)
 		return (0);
+	if (val == 1000000)
+		return (get_nb_rot_rev_pos(list,
+					rot_to_lowest_target(list, val) - 1));
 	if (pos <= lenB / 2)
 	{
 	//	printf("--|%d|-- number of rotations for b\n", pos - 1);
@@ -109,6 +112,23 @@ int	get_nb_rot_pos(t_int_list *list, int top_val)
 	}
 }
 
+int	rot_to_lowest_target(t_int_list *list, int target)
+{
+	t_int_list	*tmp;
+	int			lowest;
+
+	tmp = list->next;
+	lowest = 1000000;
+	while (tmp != list)
+	{
+		if (lowest > tmp->target_index && tmp->target_index < target)
+			lowest = tmp->target_index;
+		tmp = tmp->next;
+	}
+   // printf("LOWEST TARGET IN A IS : %d\n", lowest);
+	return (lowest);
+}
+
 int	rot_to_highest_target(t_int_list *list, int target)
 {
 	t_int_list	*tmp;
@@ -160,6 +180,7 @@ void	set_shortest_alignment(int *rA, int *rB, t_int_list *a, t_int_list *b)
 			shortest = absolute(keep_rot) + absolute(keep_index);
 			*rA = keep_rot;
 			*rB = keep_index;
+	//        printf("rot A : --[ %d ]--\nrot B : --[ %d ]--\n", *rA, *rB);
 		}
 		tmp = tmp->next;
 	}
@@ -183,8 +204,11 @@ void	make_moves_from_rots2(t_int_list *a, t_int_list *b, int rotA, int rotB)
 		exec_n_instructions(a, b, rotB, "rb");
 }
 
-void	make_moves_from_rots(t_int_list *a, t_int_list *b,int rotA, int rotB)
+void	make_moves_from_rots(t_int_list *a, t_int_list *b, int rotA, int rotB)
 {
+    //printf("rot A -- [ %d ] --\nrot B -- [ %d ] --\n", rotA, rotB);
+	are_rots_optimized(&rotA, get_list_length(b), &rotB);
+    //printf("NOW OPTIMIZED :\nrot A -- [ %d ] --\nrot B -- [ %d ] --\n", rotA, rotB);
 	if (rotA < 0 && rotB < 0)
 	{
 		exec_n_instructions(a, b, smaller(-rotA, -rotB), "rrr");
@@ -215,17 +239,15 @@ void	push_all_to_a(t_int_list *a, t_int_list *b, t_instruction_list **l)
 	erase_instructions(l);
 	rA = 0;
 	rB = 0;
-	//printf("--------------------\n|PUSH ALL IN ENTREE|\n--------------------\n");
-	while (t_b != b)
+//	printf("--------------------\n|PUSH ALL IN ENTREE|\n--------------------\n");
+	while (b->next != b)
 	{
-		//printf("rot before push to A : |%d|\n", rotA);
 		set_shortest_alignment(&rA, &rB, a, b);
-		//printf("rot A : --[ %d ]--\nrot B : --[ %d ]--\n", rA, rB);
 		make_moves_from_rots(a, b, rA, rB);
 		make_a_move(a, b, "pa");
 		t_b = t_b->next;
 	}
-	//printf("--------------------\n|PUSH ALL OUT SORTIE|\n--------------------\n");
+//	printf("--------------------\n|PUSH ALL OUT SORTIE|\n--------------------\n");
 }
 
 int	lowest_target(t_int_list *list, int target)
@@ -286,7 +308,7 @@ int	checks_before_instruction(t_instruction_list **l, t_int_list *a,
 		return (-1);
 	}
 	if (get_list_length(a) > 9 &&
-			a->next->target_index == a->next->next->target_index - 1)
+			a->next->target_index == a->next->next->target_index + 1)
 		make_a_move(a, b, "sa");
 	return (1);
 }

@@ -119,9 +119,9 @@ void	make_a_move(t_int_list *a, t_int_list *b, char *move)
 	else
 		make_a_move_part2(a, b, move);
 	ft_putstr_fd(move, 1);
-	//print_circular_linked_list(a, "\e[4;48;5;74mA");
-	//print_circular_linked_list(b, "\e[4;48;5;47mB");
-	//getchar();
+//	print_circular_linked_list(a, "\e[4;48;5;74mA");
+//	print_circular_linked_list(b, "\e[4;48;5;47mB");
+//	getchar();
 }
 
 void	instruction_append(t_instruction_list **list, char *inst)

@@ -50,9 +50,9 @@ int	find_ranged_target_index(t_int_list *a, int min, int max, int len)
 		tmp = tmp->next;
 		rev_tmp = rev_tmp->prev;
 	}
-	if (len >= 15 && len <= 200)
+	if (len >= 15 && len < 100)
 		return (find_ranged_target_index(a, max, max + len / 5, len));
-	else if (len > 200)
+	else if (len >= 100)
 		return (find_ranged_target_index(a, max, max + len / 11, len));
 	return (find_ranged_target_index(a, max, max + 1, len));
 }
@@ -202,89 +202,176 @@ void	are_rots_optimized(int *rotA, int lenB, int *rotB)
 //	printf("|After optimization| A : %d | B(%d) : %d\n", *rotA, lenB, *rotB);
 }
 
-void	set_to_push_values(t_int_list *root, int begining)
+int get_how_many_to_keep(t_int_list *list)
+{
+    t_int_list  *tmp;
+    int         count;
+
+    tmp = list->next;
+    count = 0;
+    while (tmp != list)
+    {
+        if (tmp->index == 0)
+            tmp = tmp->next;
+        if (tmp->to_push == 0)
+            ++count;
+        if (tmp != list)
+            tmp = tmp->next;
+    }
+   // printf("i can see --[%d] to keep\n", count);
+    return (count);
+}
+
+void    set_to_push_values(t_int_list *root, int begining, int precision)
 {
 	t_int_list	*tmp;
 	t_int_list	*copy;
 	int			t_i;
 
 	tmp = root->next;
-	while (--begining != 0)
+	while (--begining > 0)
 		tmp = tmp->next;
+	t_i = tmp->target_index;
+	tmp->to_push = 0;
+  //  printf("[%d] ---> ( %d )  just setted.\n", tmp->index, tmp->target_index);
 	copy = tmp->next;
-	t_i = copy->target_index;
 	while (copy != tmp)
 	{
 		if (copy == root)
 			copy = copy->next;
-		if (t_i > copy->target_index)
-			copy->to_push = 1;
-		else
+        if (copy->target_index > t_i && copy->target_index <= t_i + precision)
+        {
+			copy->to_push = 0;
+     //       printf("[%d] ---> ( %d )  just setted.\n", copy->index, copy->target_index);
 			t_i = copy->target_index;
+        }
+		else
+			copy->to_push = 1;
 		if (copy != tmp)
 			copy = copy->next;
 	}
 }
 
-int	recursive_create_loop(t_int_list *list, int precision)
+t_find_loop *recursive_find_loop(t_int_list *list, int precision, int len)
 {
-	(void)precision;
-	(void)list;
-	return (-156487);
-	////////////////TO DO / A FAIRE / HASTA LA VIDA / STRUDEL
+    t_int_list          *tmp;
+    static t_find_loop  *fl = NULL;
+
+//	printf("recursive at index --[%d]-- with precision of %d\n", list->index, precision);
+    if (fl == NULL)
+        fl = &((t_find_loop){.count = 0, .max_target = list->target_index,
+        .loop_index = 0, .max_count = 0});
+    if (precision == 1)
+        fl->max_count = 0;
+    tmp = list->next;
+    if (precision >= len / 3)
+    {
+/*	    	printf("The loop can be found at index[%d]\n\
+With a size of      --[ %d ]--\n\
+With a precision of --[ %d ]--\n",
+fl->loop_index, fl->max_count, fl->precision);
+*/        return (fl);
+    }
+    fl->count = 0;
+    fl->max_target = list->target_index;
+    while (tmp != list)
+    {
+        if (tmp->index == 0)
+            tmp = tmp->next;
+        if (tmp->target_index > fl->max_target && tmp->target_index <= fl->max_target + precision)
+        {
+            fl->max_target = tmp->target_index;
+            ++fl->count;
+        }
+        if (tmp != list)
+            tmp = tmp->next;
+    }
+  //  printf("count is --[%d]-- | max_count is --[%d]--\n", fl->count, fl->max_count);
+    if (fl->count > fl->max_count)
+    {
+        fl->max_count = fl->count;
+        fl->loop_index = list->index;
+        fl->precision = precision;
+    //    printf("fl->precision setted to %d\n", fl->precision);
+    }
+	return(recursive_find_loop(list, ++precision, len));
 }
 
-int	find_biggest_loop(t_int_list *list)
+t_find_loop find_biggest_loop(t_int_list *list, int len)
 {
 	t_int_list	*tmp;
-	int			loop_index;
-	int			loop_len;
-	int			len;
-/*
-//
-//	Pour cette fonction je veux :
-//	- partir d'un element de la liste
-//	- chercher en recursive avec une precision qui augmente d'1 chaque tour,
-//		quelle est la plus grande taille que peut faire la loop
-//	- 
-//
-*/
+    t_find_loop fl;
+    t_find_loop *fl_copy;
+
 	tmp = list->next;
-	loop_index = 0;
-	loop_len = 0;
-	while (tmp != list && tmp->next != list)
-	{
-		len = 0;
-		while (tmp->next != list && tmp->target_index < tmp->next->target_index
-				&& ++len)
-			tmp = tmp->next;
-		if (len > loop_len)
-		{
-			loop_len = len;
-			loop_index = tmp->index - len;
-		}
-		tmp = tmp->next;
-	}
-	set_to_push_values(list, loop_index);
-	return (loop_index);
+	fl = (t_find_loop){.loop_index = 0, .max_count = 0};
+    while (tmp != list)
+    {
+        fl_copy = recursive_find_loop(tmp, 1, len);
+    /*	printf("fl copy got index[%d]\n\
+    max count--[ %d ]--\n\
+    while fl max count is --[%d]--\n",
+fl_copy->loop_index, fl_copy->max_count, fl.max_count);
+*/        if (fl.max_count < fl_copy->max_count)
+            fl = *fl_copy;
+        tmp = tmp->next;
+    }
+	set_to_push_values(list, fl.loop_index, fl.precision);
+/*	printf("The REEEEAAAAALLL loop can be found at index[%d]\n\
+With a size of      --[ %d ]--\n\
+With a precision of --[ %d ]--\n",
+fl.loop_index, fl.max_count, fl.precision);
+  */  return (fl);
+}
+
+int is_swap_needed(t_int_list *list, t_find_loop loop)
+{
+    int hmtk;
+    int loop_index;
+
+    if (loop.loop_index == 1)
+        loop_index = 2;
+    else
+        loop_index = loop.loop_index;
+    //printf("Do i swap ?\n");
+    hmtk = get_how_many_to_keep(list);
+    swap(list);
+	set_to_push_values(list, loop_index, loop.precision);
+    if (hmtk < get_how_many_to_keep(list))
+        ft_putstr_fd("sa", 1);
+    else
+    {
+        swap(list);
+    	set_to_push_values(list, loop.loop_index, loop.precision);
+        return (0);
+    }
+    return (1);
 }
 
 void	push_until_loop_creation(t_int_list *a, t_int_list *b)
 {
 	t_int_list	*tmp;
 	t_int_list	*next;
-	int			until;
+    int         len;
+    t_find_loop loop;
 
 	tmp = a->next;
-	until = find_biggest_loop(a);
-//	printf("the loop can be found at index[%d]\n", until);
+    len = get_list_length(a);
+	loop = find_biggest_loop(a, len);
 	while (check_if_sorted_V2(a, (enum Sort_Order)SMALL_TO_BIG) < 0)
 	{
 		next = tmp->next;
-		if (tmp->to_push == 1)
+        is_swap_needed(a, loop);
+      //  printf("current elem apres 'tmp = a->next' :  [%d] ---> (%d)     loop_index[%d]     to push ? [%s]\n", tmp->index, tmp->target_index, loop.loop_index, tmp->to_push == 0 ? "non":"oui");
+		if (tmp->to_push == 1 && loop.loop_index != 1)
+        {
+           // printf("I HAVE TO PUSH IT\n");
 			make_a_move(a, b, "pb");
+        }
 		else
 			make_a_move(a, b, "ra");
+        if (--loop.loop_index == 0)
+            loop.loop_index = get_list_length(a);
 		tmp = next;
 	}
 }
@@ -293,7 +380,8 @@ void	long_list_algo(t_instruction_list **l, t_int_list *a, t_int_list *b)
 {
 	push_until_loop_creation(a, b);
 	push_all_to_a(a, b, l);
-	checks_before_instruction(l, a, b);
+	make_moves_from_rots(a, b, get_nb_rot_rev_pos(a,
+	rot_to_lowest_target(a, 1000000) - 1), 0);
 }
 
 void	set_instruction_list(t_instruction_list **l, t_int_list *a,

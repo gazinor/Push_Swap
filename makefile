@@ -4,7 +4,7 @@ NAME	=	push_swap
 
 CC		=	gcc
 
-CFLAGS  =	-Wall -Wextra -Werror
+CFLAGS  =	-O3 -Wall -Wextra -Werror
 
 DEBUG	=	-g3 -fsanitize=address
 

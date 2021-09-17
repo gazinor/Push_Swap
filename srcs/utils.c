@@ -42,8 +42,8 @@ void	ft_putstr_fd(char *str, int fd)
 	i = 0;
 	while (str[i] != '\0')
 		++i;
-	write(fd, str, i);
-	write(fd, "\n", 1);
+	i = write(fd, str, i);
+	i = write(fd, "\n", 1);
 }
 
 void	print_error(void)
