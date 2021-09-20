@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/31 06:49:57 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/15 09:31:50 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/20 18:48:14 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,13 +175,20 @@ void	set_shortest_alignment(int *rA, int *rB, t_int_list *a, t_int_list *b)
 		keep_rot = get_nb_rot_rev_pos(a, tmp->target_index);
 		keep_index = tmp->index - 1;
 		are_rots_optimized(&keep_rot, lenB, &keep_index);
-		if (absolute(keep_rot) + absolute(keep_index) < shortest)
+		if (keep_rot * keep_index >= 0 && bigger(absolute(keep_rot), absolute(keep_index)) < shortest)
 		{
-			shortest = absolute(keep_rot) + absolute(keep_index);
+			shortest = bigger(absolute(keep_rot), absolute(keep_index));
 			*rA = keep_rot;
 			*rB = keep_index;
-	//        printf("rot A : --[ %d ]--\nrot B : --[ %d ]--\n", *rA, *rB);
+	   //     printf("Same sign : rot A : --[ %d ]-- || rot B : --[ %d ]--\nShortest now equal to : --[ %d ]--\n", *rA, *rB, shortest);
 		}
+		else if (keep_rot * keep_index < 0 && absolute(keep_rot) + absolute(keep_index) < shortest)
+			{
+				shortest = absolute(keep_rot) + absolute(keep_index);
+				*rA = keep_rot;
+				*rB = keep_index;
+	    //    printf("Different sign : rot A : --[ %d ]-- || rot B : --[ %d ]--\nShortest now equal to : --[ %d ]--\n", *rA, *rB, shortest);
+			}
 		tmp = tmp->next;
 	}
 }

@@ -4,6 +4,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <unistd.h>
+# include "get_next_line.h"
 
 enum Sort_Order
 {
@@ -79,6 +80,10 @@ int			check_if_sorted(t_int_list *root, int order);
 int			check_if_sorted_V2(t_int_list *root, int order);
 
 void		make_a_move(t_int_list *list, t_int_list *maybe, char *move);
+
+void		make_a_move_part2(t_int_list *list, t_int_list *maybe, char *move);
+
+void		make_a_move_no_print(t_int_list *list, t_int_list *b, char *move);
 
 int			str_compare(char *s1, char *s2);
 

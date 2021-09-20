@@ -11,7 +11,7 @@ U="\e[4;38;2;226;179;24;48;2;150;0;220m"
 B="\e[1m"
 
 nb_tests=100
-
+Checker=./Checker
 function ProgressBar {
     let _progress=(${1}*100/${2}*100)/100
     let _done=(${_progress}*4)/10
@@ -27,6 +27,8 @@ function testList {
     s=0
     max=0
     min=9999999
+	above=0
+	score=5500
     printf "\nList size : $1\n"
     for i in `seq 0 $nb_tests`;
     do
@@ -42,6 +44,10 @@ function testList {
         then
             max=$var
         fi
+        if [ "$var" -gt "$score" ]
+        then
+			let ++above
+		fi
         s=$(( $s + $var))
         ProgressBar $i $nb_tests
     done
@@ -50,8 +56,9 @@ function testList {
     X=`echo "$s / ($nb_tests + 1)" | bc -l`
     printf %.0f "$X"
     printf "\n${COLOR_RESET}Min : ${COLOR_YELLOW}$min ${COLOR_RESET}| Max : ${COLOR_YELLOW}$max${COLOR_RESET}"
+	printf "\nNUMBER OF TEST(S) ABOVE 5500 MOVES : $above\n"
     echo
-    arg=`ruby -e "puts (1..$1).to_a.shuffle.join(' ')"`; ./push_swap $arg | checkers/checker_Mac $arg
+	arg=`ruby -e "puts (1..$1).to_a.shuffle.join(' ')"`; ./push_swap $arg | $Checker $arg
 }
 
 for arg in $@

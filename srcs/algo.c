@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 22:26:53 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/15 09:32:57 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/20 20:46:07 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -380,8 +380,7 @@ void	long_list_algo(t_instruction_list **l, t_int_list *a, t_int_list *b)
 {
 	push_until_loop_creation(a, b);
 	push_all_to_a(a, b, l);
-	make_moves_from_rots(a, b, get_nb_rot_rev_pos(a,
-	rot_to_lowest_target(a, 1000000) - 1), 0);
+	make_moves_from_rots(a, b, get_nb_rot_pos(a, 2), 0);
 }
 
 void	set_instruction_list(t_instruction_list **l, t_int_list *a,

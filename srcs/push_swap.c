@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 18:44:27 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/15 09:31:52 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/20 22:57:51 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,4 @@ void	push_swap(t_int_list *a, t_int_list *b)
 	}
 	free_list(&a);
 	free_list(&b);
-}
-
-int	main(int ac, char **av)
-{
-	push_swap(int_list_from_str_list(ac, av), create_list());
-	return (0);
 }
