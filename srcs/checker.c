@@ -20,13 +20,22 @@ void	deal_with_ret(t_int_list *a, t_int_list *b, char *line, int ret)
 	{
 		free_list(&a);
 		free_list(&b);
-		free(line);
+		if (line && *line == '\0')
+		{
+			free(line);
+			line = NULL;
+		}
 		print_error();
 	}
 	else
 	{
-		free(line);
-		line = NULL;
+		free_list(&a);
+		free_list(&b);
+		if (line && *line == '\0')
+		{
+			free(line);
+			line = NULL;
+		}
 	}
 }
 
@@ -41,11 +50,15 @@ int	main(int ac, char **av)
 		return (1);
 	a_copy = int_list_from_str_list(ac, av);
 	b_copy = create_list();
-	ret = get_next_line(0, &line);
+	ret = get_next_line(&line);
+		printf("ret --------------> %d\n", ret);
 	while (ret > 0)
 	{
+		printf("ret --------------> %d\n", ret);
 		deal_with_ret(a_copy, b_copy, line, ret);
-		ret = get_next_line(0, &line);
+		if (line && *line)
+			free(line);
+		ret = get_next_line(&line);
 	}
 	deal_with_ret(a_copy, b_copy, line, ret);
 	if (check_if_sorted(a_copy, (enum Sort_Order)SMALL_TO_BIG) == -1 ||

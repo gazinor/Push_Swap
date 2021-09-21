@@ -4,7 +4,7 @@ NAME	=	push_swap
 
 CC		=	gcc
 
-CFLAGS  =	-O3 -Wall -Wextra -Werror -I$(HEADER_P)
+CFLAGS  =	-O3 -g3 -Wall -Wextra -Werror -I$(HEADER_P)
 
 DEBUG	=	-g3 -fsanitize=address
 
@@ -57,7 +57,7 @@ d	:	$(OBJ)
 	@$(CC) $(CFLAGS) $(DEBUG) $(OBJ) -o debug
 
 tester : all check
-	@sh checkers/tester.sh $(noa)
+	@bash checkers/tester.sh $(noa)
 
 check : $(CHECKER_OBJS)
 	@$(CC) $(CFLAGS) $(CHECKER_OBJS) -o $(CHECKER_NAME)

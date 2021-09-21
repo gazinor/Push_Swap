@@ -33,14 +33,8 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
-char				*ft_substr(const char *s, unsigned int start, size_t len);
-char				*ft_strjoin(char *s1, char const *s2);
-void				*ft_memcpy(void *dest, const void *src, size_t n);
-char				*ft_strdup(char *str);
-t_list				*ft_create_fd(int fd, t_list **list);
-t_list				*ft_find_fd(int fd, t_list **list);
-int					ft_check(int fd, char **buffer, char **line);
-char				*ft_read_n_check(int fd, char *buffer, int *ret);
-int					get_next_line(int fd, char **line);
+size_t				ft_strlen(char const *s);
+int					ft_isprint(int c);
+int					get_next_line(char **line);
 
 #endif
