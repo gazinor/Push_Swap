@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/23 18:26:19 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/20 20:13:54 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/21 07:56:58 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ int	get_next_line(char **line)
 
 	c = '\0';
 	ret = read(0, &c, 1);
+	if (ret == -1)
+		return (ret);
 	str = malloc(sizeof(char) * 1);
 	str[0] = '\0';
 	while (c != '\n' && ret != 0)
@@ -73,8 +75,5 @@ int	get_next_line(char **line)
 		ret = read(0, &c, 1);
 	}
 	*line = str;
-	if (ret == 0)
-		return (0);
-	else
-		return (1);
+	return (ret);
 }

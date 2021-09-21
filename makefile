@@ -21,8 +21,10 @@ SRC_TMP :=	utils.c \
 			algo_utils2.c \
 			parsing.c \
 			push_swap.c \
-			get_next_line.c \
-			get_next_line_utils.c
+			gnl.c \
+			gnl_utils.c \
+			gnl_utils2.c \
+			gnl_utils3.c
 
 CHECKER_NAME	=	Checker
 TMP				=	checker.c
@@ -56,10 +58,10 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.c
 d	:	$(OBJ)
 	@$(CC) $(CFLAGS) $(DEBUG) $(OBJ) -o debug
 
-tester : all check
+tester : check
 	@bash checkers/tester.sh $(noa)
 
-check : $(CHECKER_OBJS)
+check : re $(CHECKER_OBJS)
 	@$(CC) $(CFLAGS) $(CHECKER_OBJS) -o $(CHECKER_NAME)
 
 save : fclean
