@@ -85,7 +85,7 @@ void	set_instruction_list(t_instruction_list **l, t_int_list *a,
 	int	lena;
 
 	lena = get_list_length(a);
-	if (lena >= 100)
+	if (lena > 8)
 	{
 		long_list_algo(l, a, b);
 		return ;

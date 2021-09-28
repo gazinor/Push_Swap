@@ -14,14 +14,12 @@ t_int_list	*get_elem(t_int_list *list, int index)
 	return (list);
 }
 
-int	return_nb_of_rots(int lenB, int pos)
+int	return_nb_of_rots(int lenb, int pos)
 {
-	if (lenB < 2)
-		return (0);
-	if (pos <= lenB / 2)
+	if (pos <= lenb / 2)
 		return (--pos);
 	else
-		return ((lenB - pos + 1) * -1);
+		return ((lenb - pos + 1) * -1);
 }
 
 int	get_nb_rot_rev_pos(t_int_list *list, int under_val)
@@ -45,6 +43,8 @@ int	get_nb_rot_rev_pos(t_int_list *list, int under_val)
 		lenb = tmp->index;
 		tmp = tmp->next;
 	}
+	if (lenb < 2)
+		return (0);
 	if (val == 1000000)
 		return (get_nb_rot_rev_pos(list,
 				rot_to_lowest_target(list, val) - 1));
@@ -72,8 +72,10 @@ int	get_nb_rot_pos(t_int_list *list, int top_val)
 		lenb = tmp->index;
 		tmp = tmp->next;
 	}
+	if (lenb < 2 || top_val == 0)
+		return (0);
 	if (val == 0)
-		return (get_nb_rot_rev_pos(list,
-				rot_to_lowest_target(list, val) - 1));
+		return (get_nb_rot_pos(list,
+				rot_to_highest_target(list, 1) + 1));
 	return (return_nb_of_rots(lenb, pos));
 }
