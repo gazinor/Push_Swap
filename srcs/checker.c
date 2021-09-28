@@ -56,8 +56,8 @@ int	main(int ac, char **av)
 		ret = get_next_line(0, &line);
 	}
 	deal_with_ret(a_copy, b_copy, line, ret);
-	if (check_if_sorted(a_copy, (enum Sort_Order)SMALL_TO_BIG) == -1 ||
-			b_copy->next != b_copy)
+	if (check_if_sorted(a_copy, (enum Sort_Order)SMALL_TO_BIG) == -1
+		|| b_copy->next != b_copy)
 		ft_putstr_fd("KO", 1);
 	else
 		ft_putstr_fd("OK", 1);

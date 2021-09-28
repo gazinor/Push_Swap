@@ -50,7 +50,7 @@ char	*ft_strmerge(char *a, char *b)
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char *str;
+	char	*str;
 
 	str = ft_strnew(ft_strlen(s1) + ft_strlen(s2));
 	if (str == NULL)

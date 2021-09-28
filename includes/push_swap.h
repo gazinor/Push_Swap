@@ -65,7 +65,7 @@ void		print_error(void);
 
 int			is_whitespace(char c);
 
-int			ft_atoi(char *nptr);
+int			ft_atoi(char *nptr, t_int_list *a, t_int_list *sorted);
 
 int			sort_list(int val, t_int_list *root);
 
@@ -77,7 +77,7 @@ void		set_target_indexes(t_int_list *root, t_int_list *sorted_list);
 
 int			check_if_sorted(t_int_list *root, int order);
 
-int			check_if_sorted_V2(t_int_list *root, int order);
+int			check_if_sorted_v2(t_int_list *root, int order);
 
 void		make_a_move(t_int_list *list, t_int_list *maybe, char *move);
 
@@ -99,7 +99,7 @@ int			find_ranged_target_index(t_int_list *a, int min, int max, int len);
 
 int			get_list_length(t_int_list *a);
 
-void		**bzeroV2(void **str_list, int size);
+void		**bzerov2(void **str_list, int size);
 
 void		instruction_append(t_instruction_list **list, char *inst);
 
@@ -153,5 +153,13 @@ t_find_loop find_biggest_loop(t_int_list *list, int len);
 t_find_loop *recursive_find_loop(t_int_list *list, int precision, int len);
 
 void	set_to_push_values(t_int_list *root, int begining, int precision);
+
+int         is_swap_needed(t_int_list *list, t_find_loop loop);
+
+void        set_find_loop(t_find_loop **fl, t_int_list *list, int precision);
+
+void        actualize_find_loop_values(t_find_loop **fl, t_int_list *list, int precision);
+
+int         lowest_target(t_int_list *list, int target);
 
 #endif

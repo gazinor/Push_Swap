@@ -12,9 +12,9 @@
 
 #include "push_swap.h"
 
-static char		*get_append(t_gnl *gnl)
+static char	*get_append(t_gnl *gnl)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	gnl->nl = 0;
@@ -54,7 +54,7 @@ static t_gnl	*get_gnl(t_list **lst, int fd)
 	return ((t_gnl *)(temp->content));
 }
 
-static void		del_gnl(t_list **lst, int fd, char **str)
+static int	del_gnl(t_list **lst, int fd, char **str)
 {
 	t_gnl	*gnl;
 	t_list	**temp;
@@ -77,9 +77,10 @@ static void		del_gnl(t_list **lst, int fd, char **str)
 		*temp = ptr;
 	}
 	ft_strdel(str);
+	return (0);
 }
 
-static int		read_buffer(t_gnl *gnl, t_list **lst, char **temp, char **line)
+static int	read_buffer(t_gnl *gnl, t_list **lst, char **temp, char **line)
 {
 	if (gnl->i == gnl->count)
 	{
@@ -102,7 +103,7 @@ static int		read_buffer(t_gnl *gnl, t_list **lst, char **temp, char **line)
 	return (0);
 }
 
-int				get_next_line(int const fd, char **line)
+int	get_next_line(int const fd, char **line)
 {
 	static t_list	*lst;
 	t_gnl			*gnl;
@@ -115,7 +116,8 @@ int				get_next_line(int const fd, char **line)
 	temp = ft_strnew(0);
 	while (gnl->count > 0)
 	{
-		if ((ret = read_buffer(gnl, &lst, &temp, line)) != 0)
+		ret = read_buffer(gnl, &lst, &temp, line);
+		if (ret != 0)
 			return (ret);
 		while (gnl->i < gnl->count)
 		{
@@ -127,6 +129,5 @@ int				get_next_line(int const fd, char **line)
 			}
 		}
 	}
-	del_gnl(&lst, fd, &temp);
-	return (0);
+	return (del_gnl(&lst, fd, &temp));
 }

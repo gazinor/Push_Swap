@@ -76,14 +76,14 @@ void	push_swap(t_int_list *a, t_int_list *b)
 	t_instruction_list	*tmp;
 
 	instruction_list = NULL;
-	while (check_if_sorted(a, (enum Sort_Order)SMALL_TO_BIG) == -1 ||
-			b->next != b)
+	while (check_if_sorted(a, (enum Sort_Order)SMALL_TO_BIG) == -1
+		|| b->next != b)
 	{
 		set_instruction_list(&instruction_list, a, b);
 		while (instruction_list != NULL)
 		{
 			if (checks_before_instruction(&instruction_list, a, b) == -1)
-				break;
+				break ;
 			if (instruction_list != NULL)
 			{
 				make_a_move(a, b, instruction_list->instruction);

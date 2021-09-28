@@ -19,7 +19,7 @@ char	*ft_strnew(size_t size)
 
 char	*ft_strcpy(char *dst, const char *src)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (src[i])
@@ -33,7 +33,7 @@ char	*ft_strcpy(char *dst, const char *src)
 
 char	*ft_strcat(char *s1, const char *s2)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (s1[i])
@@ -49,7 +49,7 @@ char	*ft_strcat(char *s1, const char *s2)
 
 size_t	ft_strlen(const char *s)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	while (s[i])

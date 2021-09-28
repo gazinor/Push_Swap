@@ -12,6 +12,12 @@
 
 #include "push_swap.h"
 
+void	print_error(void)
+{
+	ft_putstr_fd("Error", 2);
+	exit(-1);
+}
+
 int	sort_list(int val, t_int_list *root)
 {
 	t_int_list	*tmp;
@@ -25,42 +31,31 @@ int	sort_list(int val, t_int_list *root)
 	return (42);
 }
 
-void	set_indexes(t_int_list *root)
+t_int_list	*int_list_from_str_list(int nbr_of_lists, char **L)
 {
-	int			index;
-	t_int_list	*tmp;
+	int			i;
+	int			add_to_list;
+	t_int_list	*a;
+	t_int_list	*sorted_list;
 
-	index = 0;
-	tmp = root->next;
-	while (tmp != root)
+	i = 0;
+	a = create_list();
+	sorted_list = create_list();
+	while (++i < nbr_of_lists && ft_atoi(L[i], a, sorted_list))
+		;
+	i = 0;
+	while (++i < nbr_of_lists)
 	{
-		tmp->index = ++index;
-		tmp = tmp->next;
-	}
-}
-
-void	set_target_indexes(t_int_list *root, t_int_list *sorted_list)
-{
-	t_int_list	*tmp_root;
-	t_int_list	*tmp_sorted_list;
-	int			index;
-
-	tmp_root = root->next;
-	while (tmp_root != root)
-	{
-		index = 1;
-		tmp_sorted_list = sorted_list->next;
-		while (tmp_sorted_list != sorted_list)
+		add_to_list = ft_atoi(L[i], a, sorted_list);
+		add_tail(add_to_list, a);
+		if (sort_list(add_to_list, sorted_list) == -1)
 		{
-			if (tmp_root->val == tmp_sorted_list->val)
-			{
-				tmp_root->target_index = index;
-				break ;
-			}
-			tmp_sorted_list = tmp_sorted_list->next;
-			++index;
+			free_list(&a);
+			free_list(&sorted_list);
+			print_error();
 		}
-		tmp_root = tmp_root->next;
 	}
-	set_indexes(root);
+	set_target_indexes(a, sorted_list);
+	free_list(&sorted_list);
+	return (a);
 }

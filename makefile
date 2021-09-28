@@ -15,12 +15,25 @@ HEADER   =	$(addprefix $(HEADER_P)/,$(HEADER_N))
 SRC_PATH =	./srcs
 SRC_TMP :=	utils.c \
 			list_functions.c \
+			erase_list_functions.c \
 			ft_atoi.c \
 			algo.c \
 			algo_utils.c \
 			algo_utils2.c \
 			parsing.c \
 			push_swap.c \
+			sets.c \
+			gets.c \
+			sorted.c \
+			more_than_a_hundred.c \
+			more_than_a_hundred_utils.c \
+			short_list.c \
+			math_functions.c \
+			checks_before_instruction.c \
+			instructions.c \
+			exec.c \
+			moves.c \
+			target_rots.c \
 			gnl.c \
 			gnl_utils.c \
 			gnl_utils2.c \

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "push_swap.h"
+
 void	ft_memdel(void **ap)
 {
 	free(*ap);
@@ -24,7 +25,7 @@ void	ft_strdel(char **as)
 
 void	*ft_memalloc(size_t size)
 {
-	void *ptr;
+	void	*ptr;
 
 	ptr = malloc(size);
 	if (ptr == NULL)

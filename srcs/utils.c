@@ -12,24 +12,24 @@
 
 #include "push_swap.h"
 
-void	free_list(t_int_list **list)
-{
-	empty_list(*list);
-	free(*list);
-	*list = NULL;
-}
-
 void	print_circular_linked_list(t_int_list *list, char *which_list)
 {
 	t_int_list	*tmp;
+	char		*to_push;
 
 	tmp = list->next;
 	printf("\n\e[48;5;166m\e[4;38;5;52mPrint %s list\e[0;48;5;166m :\n\n",
 		which_list);
 	while (tmp != list)
 	{
-		printf("Index [%d](should be at [%d]) : |%d| -- next is --> |%d|     push ? %s\n",
-			tmp->index, tmp->target_index, tmp->val, tmp->next->val, tmp->to_push == 1 ? "Oui" : "Non");
+		if (tmp->to_push == 1)
+			to_push = "oui";
+		else
+			to_push = "non";
+		printf("Index [%d](should be at [%d]) : \
+				|%d| -- next is --> |%d|     push ? %s\n",
+			tmp->index, tmp->target_index, tmp->val,
+			tmp->next->val, to_push);
 		tmp = tmp->next;
 	}
 	printf("\e[0m\n");
@@ -46,37 +46,21 @@ void	ft_putstr_fd(char *str, int fd)
 	i = write(fd, "\n", 1);
 }
 
-void	print_error(void)
+int	str_compare(char *s1, char *s2)
 {
-	ft_putstr_fd("Error", 2);
-	exit(-1);
-}
-
-t_int_list	*int_list_from_str_list(int nbr_of_lists, char **L)
-{
-	int			i;
-	int			add_to_list;
-	t_int_list	*a;
-	t_int_list	*sorted_list;
+	int	i;
 
 	i = 0;
-	a = create_list();
-	sorted_list = create_list();
-	while (++i < nbr_of_lists && ft_atoi(L[i]))
-		;
-	i = 0;
-	while (++i < nbr_of_lists)
+	if (!s1 && !s2)
+		return (0);
+	if (!s1 || !s2)
 	{
-		add_to_list = ft_atoi(L[i]);
-		add_tail(add_to_list, a);
-		if (sort_list(add_to_list, sorted_list) == -1)
-		{
-			free_list(&a);
-			free_list(&sorted_list);
-			print_error();
-		}
+		if (!s1)
+			return (s2[i]);
+		else
+			return (s1[i]);
 	}
-	set_target_indexes(a, sorted_list);
-	free_list(&sorted_list);
-	return (a);
+	while (s1[i] != '\0' && s2[i] != '\0' && s1[i] == s2[i])
+		++i;
+	return (s1[i] - s2[i]);
 }

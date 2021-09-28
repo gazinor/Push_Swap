@@ -22,34 +22,11 @@ t_int_list	*create_list(void)
 		root->val = 1111999;
 		root->index = 0;
 		root->target_index = 0;
+		root->to_push = 0;
 		root->prev = root;
 		root->next = root;
 	}
 	return (root);
-}
-
-void	empty_list(t_int_list *list)
-{
-	t_int_list	*tmp;
-	t_int_list	*next;
-
-	tmp = list->next;
-	while (tmp != list)
-	{
-		next = tmp->next;
-		if (tmp)
-			free(tmp);
-		tmp = next;
-	}
-}
-
-void	remove_elem(t_int_list *elem)
-{
-	elem->prev->next = elem->next;
-	elem->next->prev = elem->prev;
-	if (elem)
-		free(elem);
-	elem = NULL;
 }
 
 void	add_head(int val, t_int_list *root)
@@ -82,4 +59,19 @@ void	add_tail(int val, t_int_list *root)
 		root->prev->next = new;
 		root->prev = new;
 	}
+}
+
+int	get_list_length(t_int_list *a)
+{
+	t_int_list	*tmp;
+	int			i;
+
+	tmp = a->next;
+	i = 0;
+	while (tmp != a)
+	{
+		tmp = tmp->next;
+		++i;
+	}
+	return (i);
 }

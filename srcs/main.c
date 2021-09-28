@@ -12,8 +12,13 @@
 
 #include "push_swap.h"
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
-    push_swap(int_list_from_str_list(ac, av), create_list());
-    return (0);
+	t_int_list	*a;
+	t_int_list	*b;
+
+	a = int_list_from_str_list(ac, av);
+	b = create_list();
+	push_swap(a, b);
+	return (0);
 }
