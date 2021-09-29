@@ -6,13 +6,30 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 10:17:11 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/20 23:42:02 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/29 06:05:22 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	set_shortest_alignment(int *rA, int *rB, t_int_list *a, t_int_list *b)
+int	set_shortest_rots_alignement(int keep_rot, int keep_index, int *shortest)
+{
+	if (keep_rot * keep_index >= 0 && bigger(absolute(keep_rot),
+			absolute(keep_index)) < *shortest)
+	{
+		*shortest = bigger(absolute(keep_rot), absolute(keep_index));
+		return (1);
+	}
+	else if (keep_rot * keep_index < 0
+		&& absolute(keep_rot) + absolute(keep_index) < *shortest)
+	{
+		*shortest = absolute(keep_rot) + absolute(keep_index);
+		return (2);
+	}
+	return (-1);
+}
+
+void	set_shortest_alignment(int *ra, int *rb, t_int_list *a, t_int_list *b)
 {
 	t_int_list	*tmp;
 	int			shortest;
@@ -28,19 +45,10 @@ void	set_shortest_alignment(int *rA, int *rB, t_int_list *a, t_int_list *b)
 		keep_rot = get_nb_rot_rev_pos(a, tmp->target_index);
 		keep_index = tmp->index - 1;
 		are_rots_optimized(&keep_rot, lenb, &keep_index);
-		if (keep_rot * keep_index >= 0 && bigger(absolute(keep_rot),
-				absolute(keep_index)) < shortest)
+		if (set_shortest_rots_alignement(keep_rot, keep_index, &shortest) != -1)
 		{
-			shortest = bigger(absolute(keep_rot), absolute(keep_index));
-			*rA = keep_rot;
-			*rB = keep_index;
-		}
-		else if (keep_rot * keep_index < 0
-			&& absolute(keep_rot) + absolute(keep_index) < shortest)
-		{
-			shortest = absolute(keep_rot) + absolute(keep_index);
-			*rA = keep_rot;
-			*rB = keep_index;
+			*ra = keep_rot;
+			*rb = keep_index;
 		}
 		tmp = tmp->next;
 	}

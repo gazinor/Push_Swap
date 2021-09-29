@@ -7,12 +7,13 @@ COLOR_RESET="\033[39m"
 RESET="\e[0m"
 COLOR_YELLOW="\033[33m"
 CBG="\e[38;5;74m"
-U="\e[4;38;2;226;179;24;48;2;150;0;220m\e[5m"
+U="\e[4;38;2;226;179;24;48;2;150;0;220m"
 B="\e[1m"
 CLEAR="\e[2J\e[20;110H"
-CENTER="\e[110G"
+CENTER="\e[100G"
 NEWLINE="n"
-
+SHORT_MARGINS="\e[90;150s"
+RESET_MARGINS="\e[;s"
 
 ##############################################################################################################################
 #                                                                                                                            #
@@ -190,13 +191,22 @@ pppppppppppppppppp"
 nb_tests=100
 Checker=./Checker
 function ProgressBar {
+	printf "\n\n\n"
     let _progress=(${1}*100/${2}*100)/100
-    let _done=(${_progress}*4)/10
-    let _left=40-$_done
+    let _done=(${_progress}*8)/10
+    let _left=80-$_done
     _fill=$(printf "%${_done}s")
     _empty=$(printf "%${_left}s")
-    printf "\rProgress : |${_fill// /${COLOR_GREEN}█${COLOR_RESET}}${_empty// /-}| ${1}/${2}"
-
+   	printf "\r${CENTER}\t\t\t\t $U Progress : ${1}/${2}${RESET}\n"
+   	printf "${CENTER} -------------------------------------------------------------------------------- \n"
+	$C_SAVE
+	for (( jindex=5 ; jindex > 0 ; jindex-- ))
+	do
+   		printf "\r${CENTER}|${_fill// /${COLOR_GREEN}█${COLOR_RESET}}${_empty// / }|"
+		$C_DOWN
+	done
+   	printf "${CENTER} -------------------------------------------------------------------------------- \n"
+	$C_RESTORE
 }
 
 function flasher {
@@ -267,6 +277,11 @@ strindex() {
     [[ "$x" = $1 ]] && echo ${#1} || echo "${#x}"
 }
 
+function random_gen 
+{
+	echo $(( $RANDOM % $2 + $1 ))
+}
+
 function print_background {
     drawing=$BASE
     nb_lines=0
@@ -277,7 +292,8 @@ function print_background {
         maximum=$(strindex "$letter" "$NEWLINE")
         for (( j=0 ; j < maximum ; j++ ))
         do
-            printf "ᾦ"
+			color="\e[48;5;232;38;5;$(random_gen 16 231)m"
+            printf "$colorᾦ"
             letter=${drawing:$(($i + $j + 1)):1}
             if (( $(strindex $letter $NEWLINE) == 1))
             then
@@ -381,6 +397,7 @@ function print_list_size {
     printf "${CENTER}ᾦᾦᾦᾦᾦᾦᾦ ᾦᾦ   ᾦᾦᾦᾦᾦᾦ       ᾦᾦᾦᾦ            ᾦᾦᾦᾦᾦᾦ    ᾦᾦ   ᾦᾦᾦᾦᾦᾦᾦᾦᾦᾦ  ᾦᾦᾦᾦᾦᾦᾦᾦᾦᾦ      ᾦᾦᾦ\n\n\n\n"
     printf "$CENTER"
     create_number_on_screen $1
+	printf "$RESET"
 }
 
 function testList {
@@ -396,9 +413,10 @@ function testList {
     do
 		list_content=`ruby -e "puts (1..$1).to_a.shuffle.join(' ')"`
         var=$(./push_swap $list_content |wc -l|awk '{$1=$1};1')
-		printf "${CLEAR}$U Number of moves : $B%d $RESET\n" "$var"
-		printf "\n\n\n\rTrying List : \n\r$CBG%s$RESET\n" "$list_content"
-        if [ "$var" -lt "$min" ]
+		printf "${CLEAR}\t\t\t$U Number of moves : $B%d $RESET\n\n\n" "$var"
+		printf "${COLOR_YELLOW}Trying List : $RESET\n\n"
+		printf "| $CBG%s$RESET\n" "$list_content" | sed 's/ / |\n| /20;P;D' | column -t
+		if [ "$var" -lt "$min" ]
         then
             min=$var
         fi
@@ -414,11 +432,11 @@ function testList {
         ProgressBar $i $nb_tests
     done
 
-    printf "\n${CENTER}Average of actions : ${COLOR_YELLOW}"
+    printf "\n${CENTER}\t\t\t       Average of actions : ${COLOR_YELLOW}"
     X=`echo "$s / ($nb_tests + 1)" | bc -l`
-    printf %.0f "$X"
-    printf "\n${CENTER}${COLOR_RESET}Min : ${COLOR_YELLOW}$min ${COLOR_RESET}| Max : ${COLOR_YELLOW}$max${COLOR_RESET}"
-	printf "\n${CENTER}NUMBER OF TEST(S) ABOVE 5500 MOVES : $above\n"
+    printf "%.0f         " "$X"
+    printf "\n${CENTER}${COLOR_RESET}\t\t\t          Min : ${COLOR_YELLOW}$min ${COLOR_RESET}| Max : ${COLOR_YELLOW}$max${COLOR_RESET}           "
+	printf "\n${CENTER}\t\t\tNUMBER OF TEST(S) ABOVE 5500 MOVES : $above\n"
     echo
 	arg=`ruby -e "puts (1..$1).to_a.shuffle.join(' ')"`; ./push_swap $arg | $Checker $arg
 }
