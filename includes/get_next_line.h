@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/23 18:09:09 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/21 08:54:44 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/29 07:51:28 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef GET_NEXT_LINE_H
@@ -15,7 +15,7 @@
 
 # include "string.h"
 
-typedef struct	s_gnl
+typedef struct s_gnl
 {
 	char		*buf;
 	int			count;
@@ -24,7 +24,7 @@ typedef struct	s_gnl
 	int			fd;
 }				t_gnl;
 
-typedef struct	s_list
+typedef struct s_list
 {
 	void			*content;
 	size_t			content_size;

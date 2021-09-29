@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 05:38:47 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/29 05:38:48 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/29 14:01:11 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ t_find_loop	find_biggest_loop(t_int_list *list, int len)
 	return (fl);
 }
 
-void	push_until_loop_creation(t_int_list *a, t_int_list *b)
+void	push_until_loop_creation(t_int_list *a, t_int_list *b, int ra, int rb)
 {
 	t_int_list	*tmp;
 	t_int_list	*next;
@@ -68,7 +68,9 @@ void	push_until_loop_creation(t_int_list *a, t_int_list *b)
 	tmp = a->next;
 	len = get_list_length(a);
 	loop = find_biggest_loop(a, len);
-	while (check_if_sorted_v2(a, (enum Sort_Order)SMALL_TO_BIG) < 0)
+	(void)ra;
+	(void)rb;
+	while (check_if_sorted_v2(a, (enum e_Sort_Order)SMALL_TO_BIG) < 0)
 	{
 		next = tmp->next;
 		is_swap_needed(a, loop);
@@ -82,9 +84,21 @@ void	push_until_loop_creation(t_int_list *a, t_int_list *b)
 	}
 }
 
+/*
+**		A implementer au dessus !!!!!!!!!!
+**
+**		set_shortest_alignmentv2(&rb, &ra, b, a);
+**		make_moves_from_rots(a, b, ra, rb);
+*/
+
 void	long_list_algo(t_instruction_list **l, t_int_list *a, t_int_list *b)
 {
-	push_until_loop_creation(a, b);
+	int	ra;
+	int	rb;
+
+	ra = 0;
+	rb = 0;
+	push_until_loop_creation(a, b, ra, rb);
 	push_all_to_a(a, b, l);
 	make_moves_from_rots(a, b, get_nb_rot_pos(a, 2), 0);
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   push_swap.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/29 08:00:26 by glaurent          #+#    #+#             */
+/*   Updated: 2021/09/29 11:01:22 by glaurent         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
 
@@ -6,13 +18,13 @@
 # include <unistd.h>
 # include "get_next_line.h"
 
-enum Sort_Order
+enum e_Sort_Order
 {
 	BIG_TO_SMALL = -1,
 	SMALL_TO_BIG = 1
 };
 
-typedef struct	s_int_list
+typedef struct s_int_list
 {
 	int					val;
 	int					index;
@@ -22,20 +34,20 @@ typedef struct	s_int_list
 	struct s_int_list	*next;
 }				t_int_list;
 
-typedef struct	s_instruction_list
+typedef struct s_instruction_list
 {
 	char						*instruction;
 	struct s_instruction_list	*next;
 }				t_instruction_list;
 
-typedef struct	s_find_loop
+typedef struct s_find_loop
 {
-	int loop_index;
-    int count;
-    int max_target;
-    int max_count;
-    int precision;
-}               t_find_loop;
+	int	loop_index;
+	int	count;
+	int	max_target;
+	int	max_count;
+	int	precision;
+}				t_find_loop;
 
 t_int_list	*create_list(void);
 
@@ -88,10 +100,10 @@ void		make_a_move_no_print(t_int_list *list, t_int_list *b, char *move);
 int			str_compare(char *s1, char *s2);
 
 void		fill_instruction_list(t_instruction_list **list,
-		int times, char *instruction);
+				int times, char *instruction);
 
 void		set_instruction_list(t_instruction_list **l, t_int_list *a,
-		t_int_list *b);
+				t_int_list *b);
 
 int			how_many_rotates(t_int_list *a, int index);
 
@@ -104,7 +116,7 @@ void		**bzerov2(void **str_list, int size);
 void		instruction_append(t_instruction_list **list, char *inst);
 
 int			checks_before_instruction(t_instruction_list **l,
-		t_int_list *a, t_int_list *b);
+				t_int_list *a, t_int_list *b);
 
 void		erase_instructions(t_instruction_list **list);
 
@@ -127,39 +139,50 @@ int			bigger(int a, int b);
 int			absolute(int a);
 
 void		execute_instruction_list(t_instruction_list **l,
-		t_int_list *a, t_int_list *b);
+				t_int_list *a, t_int_list *b);
 
 void		ideal_instructions(t_int_list *a, t_instruction_list **l);
 
 int			rot_to_highest_target(t_int_list *list, int target);
 
-int	        rot_to_lowest_target(t_int_list *list, int target);
+int			rot_to_lowest_target(t_int_list *list, int target);
 
 void		are_rots_optimized(int *rotA, int lenB, int *rotB);
 
 void		long_list_algo(t_instruction_list **l,
-		t_int_list *a, t_int_list *b);
+				t_int_list *a, t_int_list *b);
 
-void        exec_n_instructions(t_int_list *a, t_int_list *b, int n, char *inst);
+void		exec_n_instructions(t_int_list *a, t_int_list *b, int n,
+				char *inst);
 
-void        make_moves_from_rots(t_int_list *a, t_int_list *b, int rotA, int rotB);
+void		make_moves_from_rots(t_int_list *a, t_int_list *b, int rotA,
+				int rotB);
 
-void        make_moves_from_rots2(t_int_list *a, t_int_list *b, int rotA, int rotB);
+void		make_moves_from_rots2(t_int_list *a, t_int_list *b, int rotA,
+				int rotB);
 
-void	push_until_loop_creation(t_int_list *a, t_int_list *b);
+void		push_until_loop_creation(t_int_list *a,
+				t_int_list *b, int ra, int rb);
 
-t_find_loop find_biggest_loop(t_int_list *list, int len);
+t_find_loop	find_biggest_loop(t_int_list *list, int len);
 
-t_find_loop *recursive_find_loop(t_int_list *list, int precision, int len);
+t_find_loop	*recursive_find_loop(t_int_list *list, int precision, int len);
 
-void	set_to_push_values(t_int_list *root, int begining, int precision);
+void		set_to_push_values(t_int_list *root, int begining, int precision);
 
-int         is_swap_needed(t_int_list *list, t_find_loop loop);
+int			is_swap_needed(t_int_list *list, t_find_loop loop);
 
-void        set_find_loop(t_find_loop **fl, t_int_list *list, int precision);
+void		set_find_loop(t_find_loop **fl, t_int_list *list, int precision);
 
-void        actualize_find_loop_values(t_find_loop **fl, t_int_list *list, int precision);
+void		actualize_find_loop_values(t_find_loop **fl, t_int_list *list,
+				int precision);
 
-int         lowest_target(t_int_list *list, int target);
+int			lowest_target(t_int_list *list, int target);
+
+void		set_shortest_alignment(int *ra, int *rb, t_int_list *a,
+				t_int_list *b);
+
+void		set_shortest_alignmentv2(int *ra, int *rb, t_int_list *a,
+				t_int_list *b);
 
 #endif

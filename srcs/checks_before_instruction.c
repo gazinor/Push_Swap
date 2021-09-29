@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 05:39:31 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/29 05:51:20 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/29 08:04:23 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	is_list_circular_sorted(t_int_list *a, t_int_list *b,
 							int *rot, t_instruction_list **l)
 {
-	if (check_if_sorted_v2(a, (enum Sort_Order)SMALL_TO_BIG) > 0)
+	if (check_if_sorted_v2(a, (enum e_Sort_Order)SMALL_TO_BIG) > 0)
 	{
 		if (b->next == b)
 		{
@@ -45,14 +45,14 @@ int	checks_before_instruction(t_instruction_list **l, t_int_list *a,
 	{
 		if (is_list_circular_sorted(a, b, &rot, l) == -1)
 			return (-1);
-		if (check_if_sorted(a, (enum Sort_Order)SMALL_TO_BIG) == 1)
+		if (check_if_sorted(a, (enum e_Sort_Order)SMALL_TO_BIG) == 1)
 		{
 			push_all_to_a(a, b, l);
 			return (-1);
 		}
 	}
-	if (check_if_sorted(a, (enum Sort_Order)SMALL_TO_BIG) == 1
-		&& check_if_sorted(b, (enum Sort_Order)BIG_TO_SMALL))
+	if (check_if_sorted(a, (enum e_Sort_Order)SMALL_TO_BIG) == 1
+		&& check_if_sorted(b, (enum e_Sort_Order)BIG_TO_SMALL))
 	{
 		push_all_to_a(a, b, l);
 		return (-1);

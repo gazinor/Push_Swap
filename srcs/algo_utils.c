@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/25 10:17:11 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/29 06:05:22 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/29 11:01:35 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,32 @@ void	set_shortest_alignment(int *ra, int *rb, t_int_list *a, t_int_list *b)
 		keep_index = tmp->index - 1;
 		are_rots_optimized(&keep_rot, lenb, &keep_index);
 		if (set_shortest_rots_alignement(keep_rot, keep_index, &shortest) != -1)
+		{
+			*ra = keep_rot;
+			*rb = keep_index;
+		}
+		tmp = tmp->next;
+	}
+}
+
+void	set_shortest_alignmentv2(int *ra, int *rb, t_int_list *a, t_int_list *b)
+{
+	t_int_list	*tmp;
+	int			shortest;
+	int			keep_rot;
+	int			keep_index;
+	int			lenb;
+
+	tmp = b->next;
+	shortest = 1000000;
+	lenb = get_list_length(b);
+	while (tmp != b)
+	{
+		keep_rot = get_nb_rot_pos(a, tmp->target_index);
+		keep_index = tmp->index - 1;
+		are_rots_optimized(&keep_rot, lenb, &keep_index);
+		if (tmp->to_push == 1 && set_shortest_rots_alignement(
+				keep_rot, keep_index, &shortest) != -1)
 		{
 			*ra = keep_rot;
 			*rb = keep_index;

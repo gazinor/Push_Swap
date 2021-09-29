@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 18:44:27 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/20 22:57:51 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/29 12:51:13 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	swap(t_int_list *root)
 {
 	int	val;
 	int	target_index;
+	int	to_push;
 
 	if (root->next != root && root->next->next != root)
 	{
@@ -25,6 +26,9 @@ void	swap(t_int_list *root)
 		target_index = root->next->target_index;
 		root->next->target_index = root->next->next->target_index;
 		root->next->next->target_index = target_index;
+		to_push = root->next->to_push;
+		root->next->to_push = root->next->next->to_push;
+		root->next->next->to_push = to_push;
 		set_indexes(root);
 	}
 }
@@ -76,7 +80,7 @@ void	push_swap(t_int_list *a, t_int_list *b)
 	t_instruction_list	*tmp;
 
 	instruction_list = NULL;
-	while (check_if_sorted(a, (enum Sort_Order)SMALL_TO_BIG) == -1
+	while (check_if_sorted(a, (enum e_Sort_Order)SMALL_TO_BIG) == -1
 		|| b->next != b)
 	{
 		set_instruction_list(&instruction_list, a, b);

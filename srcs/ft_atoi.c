@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 21:54:24 by glaurent          #+#    #+#             */
-/*   Updated: 2021/08/28 09:32:55 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/29 14:07:12 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,19 @@ int	is_whitespace(char c)
 	return (0);
 }
 
+void	atoi_error(t_int_list *a, t_int_list *sorted)
+{
+	free_list(&a);
+	free_list(&sorted);
+	print_error();
+}
+
+void	skip_white(char *str, int *i)
+{
+	while (is_whitespace(str[*i]))
+		++*i;
+}
+
 int	ft_atoi(char *nptr, t_int_list *a, t_int_list *sorted)
 {
 	long	nb;
@@ -39,20 +52,21 @@ int	ft_atoi(char *nptr, t_int_list *a, t_int_list *sorted)
 	i = 0;
 	nb = 0;
 	sign = 1;
-	while (is_whitespace(nptr[i]))
-		i++;
+	if (!nptr || (nptr && !*nptr))
+		atoi_error(a, sorted);
+	skip_white(nptr, &i);
+	if (!nptr[i])
+		atoi_error(a, sorted);
 	if (nptr[i] == '+' || nptr[i] == '-')
 		if (nptr[i++] == '-')
 			sign = -1;
+	if (!(nptr[i] >= '0' && nptr[i] <= '9'))
+		atoi_error(a, sorted);
 	while (nptr[i] >= '0' && nptr[i] <= '9')
 		nb = ((nb * 10) + (nptr[i++] - 48));
+	skip_white(nptr, &i);
 	if (((nptr[i] == '\0') && ((nptr[i - 1] == '-') || (nptr[i - 1] == '+')))
-		|| (nptr[i] != '\0' && !is_whitespace(nptr[i]) && !(nptr[i] >= '0'
-				&& nptr[i] <= '9')) || nb > 2147483647 || nb < -2147483648)
-	{
-		free_list(&a);
-		free_list(&sorted);
-		print_error();
-	}
+		|| (nptr[i] != '\0' || nb > 2147483647 || nb < -2147483648))
+		atoi_error(a, sorted);
 	return ((int)nb * sign);
 }

@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 05:39:18 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/29 05:39:18 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/29 13:38:43 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,3 +79,9 @@ void	make_a_move(t_int_list *a, t_int_list *b, char *move)
 		make_a_move_part2(a, b, move);
 	ft_putstr_fd(move, 1);
 }
+
+/*	
+**	print_circular_linked_list(a, "A");
+**	print_circular_linked_list(b, "B");
+**	getchar();
+*/

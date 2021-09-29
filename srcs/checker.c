@@ -6,7 +6,7 @@
 /*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/20 19:02:45 by glaurent          #+#    #+#             */
-/*   Updated: 2021/09/21 09:32:15 by glaurent         ###   ########.fr       */
+/*   Updated: 2021/09/29 08:02:30 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	main(int ac, char **av)
 		ret = get_next_line(0, &line);
 	}
 	deal_with_ret(a_copy, b_copy, line, ret);
-	if (check_if_sorted(a_copy, (enum Sort_Order)SMALL_TO_BIG) == -1
+	if (check_if_sorted(a_copy, (enum e_Sort_Order)SMALL_TO_BIG) == -1
 		|| b_copy->next != b_copy)
 		ft_putstr_fd("KO", 1);
 	else
