@@ -76,7 +76,7 @@ void	push_swap(t_int_list *a, t_int_list *b)
 	t_instruction_list	*tmp;
 
 	instruction_list = NULL;
-	while (check_if_sorted(a, (enum Sort_Order)SMALL_TO_BIG) == -1
+	while (check_if_sorted(a, SMALL_TO_BIG) == -1
 		|| b->next != b)
 	{
 		set_instruction_list(&instruction_list, a, b);

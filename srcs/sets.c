@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sets.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/08/25 10:17:11 by glaurent          #+#    #+#             */
+/*   Updated: 2021/09/20 23:42:02 by glaurent         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "push_swap.h"
 
 void	set_to_push_values(t_int_list *root, int begining, int precision)
@@ -73,7 +85,7 @@ void	set_find_loop(t_find_loop **fl, t_int_list *list, int precision)
 	if (*fl == NULL)
 	{
 		*fl = &((t_find_loop){.count = 0, .max_target = list->target_index,
-				.loop_index = 0, .max_count = 0});
+				.loop_index = 0, .max_count = 0, .precision = 0});
 	}
 	if (precision == 1)
 		(*fl)->max_count = 0;

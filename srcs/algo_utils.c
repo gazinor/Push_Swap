@@ -12,13 +12,30 @@
 
 #include "push_swap.h"
 
-void	set_shortest_alignment(int *rA, int *rB, t_int_list *a, t_int_list *b)
+int	is_elem_the_shortest(int *shortest, int keep_rot, int keep_index)
+{
+	if (keep_rot * keep_index >= 0 && bigger(absolute(keep_rot),
+			absolute(keep_index)) < *shortest)
+	{
+		*shortest = bigger(absolute(keep_rot), absolute(keep_index));
+		return (1);
+	}
+	else if (keep_rot * keep_index < 0
+		&& absolute(keep_rot) + absolute(keep_index) < *shortest)
+	{
+		*shortest = absolute(keep_rot) + absolute(keep_index);
+		return (1);
+	}
+	return (0);
+}
+
+void	set_shortest_alignment(int *ra, int *rb, t_int_list *a, t_int_list *b)
 {
 	t_int_list	*tmp;
 	int			shortest;
+	int			lenb;
 	int			keep_rot;
 	int			keep_index;
-	int			lenb;
 
 	tmp = b->next;
 	shortest = 1000000;
@@ -28,19 +45,10 @@ void	set_shortest_alignment(int *rA, int *rB, t_int_list *a, t_int_list *b)
 		keep_rot = get_nb_rot_rev_pos(a, tmp->target_index);
 		keep_index = tmp->index - 1;
 		are_rots_optimized(&keep_rot, lenb, &keep_index);
-		if (keep_rot * keep_index >= 0 && bigger(absolute(keep_rot),
-				absolute(keep_index)) < shortest)
+		if (is_elem_the_shortest(&shortest, keep_rot, keep_index) == 1)
 		{
-			shortest = bigger(absolute(keep_rot), absolute(keep_index));
-			*rA = keep_rot;
-			*rB = keep_index;
-		}
-		else if (keep_rot * keep_index < 0
-			&& absolute(keep_rot) + absolute(keep_index) < shortest)
-		{
-			shortest = absolute(keep_rot) + absolute(keep_index);
-			*rA = keep_rot;
-			*rB = keep_index;
+			*ra = keep_rot;
+			*rb = keep_index;
 		}
 		tmp = tmp->next;
 	}

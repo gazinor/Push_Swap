@@ -9,13 +9,14 @@
 /*   Updated: 2021/09/21 08:54:44 by glaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 # define BUFF_SIZE 4096
 
 # include "string.h"
 
-typedef struct	s_gnl
+typedef struct s_gnl
 {
 	char		*buf;
 	int			count;
@@ -24,7 +25,7 @@ typedef struct	s_gnl
 	int			fd;
 }				t_gnl;
 
-typedef struct	s_list
+typedef struct s_list
 {
 	void			*content;
 	size_t			content_size;

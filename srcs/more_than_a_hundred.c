@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   more_than_a_hundred.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: glaurent <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/08/25 10:17:11 by glaurent          #+#    #+#             */
+/*   Updated: 2021/09/20 23:42:02 by glaurent         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "push_swap.h"
 
 t_find_loop	*recursive_find_loop(t_int_list *list, int precision, int len)
@@ -29,21 +41,21 @@ t_find_loop	*recursive_find_loop(t_int_list *list, int precision, int len)
 t_find_loop	find_biggest_loop(t_int_list *list, int len)
 {
 	t_int_list	*tmp;
-	t_find_loop	fl;
+	t_find_loop	*fl;
 	t_find_loop	*fl_copy;
 
 	tmp = list->next;
-	fl = (t_find_loop){.loop_index = 0, .max_count = 0,
-		.precision = 0};
+	fl = &(t_find_loop){.loop_index = 0, .max_count = 0,
+		.precision = 0, .max_target = 0, .count = 0};
 	while (tmp != list)
 	{
 		fl_copy = recursive_find_loop(tmp, 1, len);
-		if (fl.max_count < fl_copy->max_count)
-			fl = *fl_copy;
+		if (fl->max_count < fl_copy->max_count)
+			fl = fl_copy;
 		tmp = tmp->next;
 	}
-	set_to_push_values(list, fl.loop_index, fl.precision);
-	return (fl);
+	set_to_push_values(list, fl->loop_index, fl->precision);
+	return (*fl);
 }
 
 void	push_until_loop_creation(t_int_list *a, t_int_list *b)
@@ -56,7 +68,7 @@ void	push_until_loop_creation(t_int_list *a, t_int_list *b)
 	tmp = a->next;
 	len = get_list_length(a);
 	loop = find_biggest_loop(a, len);
-	while (check_if_sorted_v2(a, (enum Sort_Order)SMALL_TO_BIG) < 0)
+	while (check_if_sorted_v2(a, SMALL_TO_BIG) < 0)
 	{
 		next = tmp->next;
 		is_swap_needed(a, loop);
